@@ -110,6 +110,45 @@ tr.clk{cursor:pointer}tr.clk:hover td{background:var(--subtle)}tr.sel td{backgro
 .fig .bar .v{font-size:var(--text-meta);color:var(--ink-2);white-space:nowrap}
 .fig .verdict{margin-top:10px;padding-top:10px;border-top:1px solid var(--line);font-size:var(--text-lead);font-weight:600}
 .fig .verdict.c{color:var(--caution)}.fig .verdict.f{color:var(--critical)}.fig .verdict.p{color:var(--positive)}
+
+/* agent pipeline and trace */
+.pipe{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.pipe .ag{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:var(--radius);padding:4px 8px;font-size:var(--text-meta);color:var(--ink-2);background:var(--surface)}
+.pipe .ag i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--positive)}
+.pipe .ag.stop{border-color:var(--caution);color:var(--ink);background:var(--caution-soft)}
+.pipe .ag.stop i{background:var(--caution)}
+.pipe .ag.done i{background:var(--positive)}
+.pipe .ag.off{opacity:.45}
+.pipe .arrow{align-self:center;color:var(--ink-3);font-size:var(--text-meta)}
+.trace{margin-top:14px;border-left:1px solid var(--line);padding-left:0;list-style:none;margin-left:10px}
+.trace li{position:relative;padding:0 0 14px 20px}
+.trace li:last-child{padding-bottom:0}
+.trace li::before{content:"";position:absolute;left:-5px;top:7px;width:9px;height:9px;border-radius:50%;background:var(--agent);border:2px solid var(--surface)}
+.trace li.stop::before{background:var(--caution)}
+.trace li.you::before{background:var(--advisor)}
+.trace .hd{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.trace .nm{font-size:var(--text-caption);font-weight:600;color:var(--agent);letter-spacing:.03em;text-transform:uppercase}
+.trace li.stop .nm{color:var(--caution)}
+.trace li.you .nm{color:var(--advisor)}
+.trace .at{font-size:var(--text-caption);color:var(--ink-3)}
+.trace .did{font-size:var(--text-body);color:var(--ink);margin-top:2px;line-height:1.5}
+.trace .did b{font-weight:600}
+.trace details{margin-top:6px;font-size:var(--text-meta)}
+.trace summary{cursor:pointer;color:var(--ink-3);text-decoration:underline;text-decoration-color:var(--line)}
+.trace .ev{margin-top:6px;border:1px solid var(--line);border-radius:var(--radius);background:var(--subtle);padding:8px 10px}
+.trace .ev dl{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;margin:0}
+.trace .ev dt{color:var(--ink-3)}.trace .ev dd{margin:0;color:var(--ink-2);overflow-wrap:anywhere}
+.trace .ev pre{margin:6px 0 0;white-space:pre-wrap;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:var(--text-caption);color:var(--ink-2);line-height:1.5}
+.conf{display:inline-flex;align-items:center;gap:6px;font-size:var(--text-caption);color:var(--ink-3)}
+.conf i{display:inline-block;width:40px;height:5px;background:var(--subtle);border-radius:3px;position:relative;overflow:hidden}
+.conf i b{position:absolute;left:0;top:0;bottom:0;background:var(--ink)}
+.conf.lo i b{background:var(--caution)}
+.agents{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:24px;max-width:960px}
+.agents .a{border:1px solid var(--line);border-radius:var(--radius);padding:12px;min-width:0}
+.agents .a .n{font-size:var(--text-caption);font-weight:600;color:var(--agent);text-transform:uppercase;letter-spacing:.03em}
+.agents .a .v{font-size:var(--text-stat);font-weight:300;line-height:1.1;margin-top:4px}
+.agents .a .l{font-size:var(--text-meta);color:var(--ink-3);margin-top:2px}
+@media(max-width:960px){.agents{grid-template-columns:repeat(2,1fr)}}
 /* three beats */
 .beats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}
 .beat{border-top:2px solid var(--line);padding-top:10px;min-width:0}
@@ -154,6 +193,12 @@ var CASES=[
   recs:[{nm:'LP-0096 · Bayfront Secondary and Primary Fund VII',tag:['Called 1,250,000','n'],kv:[['Commitment','25,000,000 (2.94%)'],['This call','1,250,000, due 29 Sep'],['Received','1,250,000 on 29 Sep, line 87'],['Received again','1,250,000 on 29 Sep, line 88']],pick:true}],
   say:'Lines 87 and 88 are the <b>same payer, amount and date</b>. Line 87 already paid Bayfront\'s call in full. A payment system re-sending after a timeout is the usual cause.',
   entry:{hd:'Proposed for line 88',ln:[['Dr 1000 Cash','1,250,000.00'],['Cr 2310 Contributions received in advance, LP-0096','1,250,000.00']]},
+  agents:[
+   {n:'Intake',at:'06:40:12',did:'Read the bank feed: <b>183 lines</b>, 29 to 30 Sep. Filed lines 87 and 88 against Fund IV. Both carry the same end-to-end reference.',ev:[['Source','Harbor National bank feed, MT940, 30 Sep 06:40'],['Lines 87 and 88','UETR 7f3a…c91e on both; same ordering bank, same time stamp 29 Sep 14:02 and 14:03']]},
+   {n:'Matching',at:'06:40:31',did:'Matched line 87 to <b>LP-0096 Bayfront</b>: amount equals the call exactly, payer name agrees. Line 88: same payer, amount and date as 87, and LP-0096 is already satisfied, so flagged <b>possible duplicate</b>.',conf:0.58,ev:[['Rule','Investor reference in the wire, then exact amount, then payer name'],['Call notice CC-009','LP-0096 · 1,250,000 · due 29 Sep · reference "MGP IV CC-009 LP-0096"'],['Why 0.58','A second identical receipt is a duplicate about 9 times in 10 on this book; the tenth is a second call the agent cannot see']]},
+   {n:'Reconciliation',at:'06:41:05',did:'Checked the investor against the call: owed <b>1,250,000</b>, received <b>2,500,000</b>. Surplus 1,250,000. No open second call for Bayfront.',ev:[['History','Bayfront: 8 prior calls, no duplicate before'],['Pattern','Two wires a minute apart with one reference is the signature of a payment-system re-release after a timeout']]},
+   {n:'Posting',at:'06:41:20',stop:true,did:'Confidence 0.58 is <b>below the 0.90 threshold</b> a person set for this fund, so nothing was posted. Prepared the hold entry and drafted the refund for a person to decide.',conf:0.58,ev:[['Prepared','Hold in 2310 Contributions received in advance; refund wire 1,250,000 to Bayfront\'s instructions on file'],['Control','Refund instructions are never taken from a letter; call-back to the treasury number on file first. Script drafted.'],['Who releases','Priya decides the hold; Anna (controller) releases the refund wire after the call-back']]}
+  ],
   beats:['Two wires from the same payer, same amount, one minute apart','Bayfront was asked for 1,250,000 once; line 87 already covers it','Hold line 88 and refund it, or decline and handle it yourself'],
   fig:{cap:'Bayfront, this call',bars:[['Asked',1250000,1250000,''],['Received',2500000,1250000,'extra']],verdict:['Received 1,250,000 more than asked','c']},
   btn:'Hold line 88, start a refund',alt:'Decline, I will handle it',
@@ -163,6 +208,12 @@ var CASES=[
   recs:[{nm:'LP-0042 · Stratton University Foundation',tag:['Paid, line 178','p'],kv:[['Commitment','5,000,000'],['This call','250,000'],['Received','250,000 on 30 Sep, line 178']]},{nm:'LP-0041 · Stratton University Endowment',tag:['Not yet paid','c'],kv:[['Commitment','40,000,000'],['This call','2,000,000'],['Received','nothing']],pick:true}],
   say:'Line 179 says "Foundation" but carries <b>no investor reference</b>. The Foundation was asked for 250,000 and has paid it. The Endowment was asked for <b>exactly 2,000,000</b> and has not. The amount decides. Same mix-up on call six.',
   entry:{hd:'Proposed for line 179',ln:[['Dr 1000 Cash','2,000,000.00'],['Cr 1200 Contributions receivable, LP-0041 Endowment','2,000,000.00']]},
+  agents:[
+   {n:'Intake',at:'06:40:12',did:'Read line 179: <b>no investor reference</b> in the wire text, only "STRATTON UNIV FOUNDATION REF MGP4".',ev:[['Source','Harbor National bank feed, 30 Sep'],['Reference field','"MGP4" is the fund short name only; the expected format is "MGP IV CC-009 LP-nnnn"']]},
+   {n:'Matching',at:'06:40:33',did:'No reference, so tried amount: <b>exactly one investor</b> was asked for 2,000,000, LP-0041 Endowment. The payer name string matches LP-0042 Foundation better, but LP-0042 was asked for 250,000 and paid it on line 178.',conf:0.74,ev:[['Rule order','Reference first; then a unique exact amount; name only breaks ties'],['Register','LP-0041 Stratton University Endowment, Boston MA, called 2,000,000, nothing received · LP-0042 Stratton University Foundation, Boston MA, called 250,000, received line 178'],['Why 0.74','Amount and name disagree. Amount wins by rule, but the agent will not post a disagreement without a person']]},
+   {n:'Reconciliation',at:'06:41:08',did:'Looked for precedent: <b>CC-006, March 2025</b>, same two investors, same missing reference, resolved by amount. Both Strattons paid in full if line 179 goes to the Endowment.',ev:[['CC-006 log','"Wire 1,800,000 from STRATTON UNIV FOUNDATION matched to LP-0041 by amount; LP-0042 paid separately." Released by A. Reyes, 14 Mar 2025'],['If posted to LP-0042 instead','LP-0042 would be over-paid by 2,000,000 and LP-0041 would look delinquent; the error on CC-006 was caught at the statement stage']]},
+   {n:'Posting',at:'06:41:22',stop:true,did:'Confidence 0.74 is below threshold. Prepared the entry to LP-0041 and a <b>rule change</b> for the register: require a reference or an exact amount, never a name alone.',conf:0.74,ev:[['Prepared','Dr 1000 Cash 2,000,000 / Cr 1200 Contributions receivable LP-0041'],['Rule change','Register matching: name similarity may only break a tie between candidates that already match on amount. Proposed to the controller; takes effect on acceptance'],['Investor notice','Draft to Stratton University Endowment treasury asking for the investor reference on future wires']]}
+  ],
   beats:['A 2,000,000 wire with no investor reference, from "Stratton"','Two Strattons: the Foundation is paid; the Endowment was asked for exactly 2,000,000','Record it for the Endowment, or decline and handle it yourself'],
   fig:{cap:'Which Stratton was asked for 2,000,000?',bars:[['Foundation',250000,2000000,''],['Endowment',2000000,2000000,''],['Line 179',2000000,2000000,'extra']],verdict:['Line 179 fits the Endowment exactly','p']},
   btn:'Record line 179 for the Endowment',alt:'Decline, I will handle it',
@@ -172,6 +223,12 @@ var CASES=[
   recs:[{nm:'Ledger · 5010 Management fee expense',tag:['Accrued 4,237,500','n'],kv:[['Basis','2.0% on commitments, quarterly in advance'],['Offset','12,500 director fees, added 18 Sep'],['Paid','4,250,000 on 30 Sep, line 181'],['Difference','12,500 paid too much']],pick:true}],
   say:'The invoice was approved on 15 Sep. The <b>12,500 offset was added on 18 Sep</b>, after approval, so the manager paid itself the gross figure. The ledger is right; the payment is 12,500 high.',
   entry:{hd:'Proposed',ln:[['Dr 1300 Due from manager','12,500.00'],['Cr 5010 Management fee expense','12,500.00']]},
+  agents:[
+   {n:'Intake',at:'06:40:14',did:'Read the fee invoice (15 Sep), the <b>offset schedule v7</b> (18 Sep) and bank line 181 (30 Sep, 4,250,000 out).',ev:[['Invoice','Meridian Capital Advisors, Q4 2026 management fee, 2.0% × 850,000,000 / 4 = 4,250,000, approved 15 Sep by A. Reyes'],['Offset schedule','v6 (12 Sep): no offsets · v7 (18 Sep): 12,500 director fees, Bramblewood Software, received by the manager in August']]},
+   {n:'Matching',at:'06:40:36',did:'Matched line 181 to the fee invoice. Amount paid equals the invoice, <b>not the ledger accrual</b> of 4,237,500.',conf:0.66,ev:[['Ledger','5010 Management fee expense accrued 4,237,500 on 18 Sep when v7 was posted'],['Fund agreement','s.6.3: 100% of director, monitoring and transaction fees received by the manager reduce the management fee of the following quarter']]},
+   {n:'Reconciliation',at:'06:41:10',did:'Variance <b>12,500</b>: the invoice was approved three days before the offset existed. The ledger is right; the payment is high.',ev:[['Timeline','15 Sep invoice approved · 18 Sep offset added · 30 Sep paid gross'],['Root cause','No control stops the fee invoice from being approved before the offset schedule for the quarter is locked']]},
+   {n:'Posting',at:'06:41:25',stop:true,did:'Prepared a receivable from the manager and a <b>control proposal</b>. Confidence 0.66: the numbers are certain, the remedy is a judgement a person should make.',conf:0.66,ev:[['Prepared','Dr 1300 Due from manager 12,500 / Cr 5010 Management fee expense 12,500; short-pay Q1 2027 invoice by 12,500'],['Control','Lock the offset schedule at T-5 before fee invoice approval; add to the quarter-end checklist'],['Manager notice','Draft to the manager\'s CFO explaining the 12,500 and the short-pay, for the controller to send']]}
+  ],
   beats:['The fee wire is 12,500 higher than the ledger expected','The 12,500 offset was added after the invoice was approved','Record 12,500 owed by the manager, or decline and handle it yourself'],
   fig:{cap:'Q4 management fee',bars:[['Due',4237500,4250000,''],['Paid',4250000,4250000,'extra']],verdict:['Paid 12,500 too much','c']},
   btn:'Record 12,500 owed by the manager',alt:'Decline, I will handle it',
@@ -181,6 +238,12 @@ var CASES=[
   recs:[{nm:'LP-0023 · Nordvik Pensjon AS',tag:['Called 2,500,000','n'],kv:[['Commitment','50,000,000 (5.88%)'],['This call','2,500,000'],['Received','2,499,965 on 29 Sep, line 89'],['Short by','35'],['Last two calls','short by 35 each time']],pick:true}],
   say:'A correspondent bank between Oslo and New York took <b>35</b> as a fee. The fund agreement lets the fund absorb shortfalls under 100. This is above the fund\'s automatic tolerance of 25, so it waited for you.',
   entry:{hd:'Proposed for line 89',ln:[['Dr 1000 Cash','2,499,965.00'],['Dr 5090 Bank charges','35.00'],['Cr 1200 Contributions receivable, LP-0023','2,500,000.00']]},
+  agents:[
+   {n:'Intake',at:'06:40:15',did:'Read line 89: <b>2,499,965</b> from Nordvik Pensjon, reference "CC009" without the investor ID.',ev:[['Source','Harbor National bank feed, 29 Sep'],['Charge code','SWIFT field 71A: SHA (shared charges), so the beneficiary bears the correspondent fee']]},
+   {n:'Matching',at:'06:40:38',did:'No ID, so tried amount within tolerance: <b>LP-0023 Nordvik</b> was asked for 2,500,000; payer name agrees. Short by 35.',conf:0.97,ev:[['Call notice CC-009','LP-0023 · 2,500,000 · due 29 Sep'],['Why 0.97','Only one investor within 100 of this amount; the payer name matches the register']]},
+   {n:'Reconciliation',at:'06:41:12',did:'Shortfall 35 is above the fund\'s <b>automatic tolerance of 25</b> but under the fund agreement\'s 100. Same shortfall on CC-004 and CC-007.',ev:[['Fund agreement','s.4.5: shortfalls under 100 arising from bank charges may be absorbed by the Partnership'],['History','CC-004: short 35 · CC-007: short 35 · both absorbed, released by P. Naidoo'],['Tolerance','A controller sets the automatic tolerance per fund; it is 25 on Fund IV. Raise it to 50 and this case settles itself next time']]},
+   {n:'Posting',at:'06:41:27',stop:true,did:'Above tolerance, so prepared the entry for a person: cash 2,499,965, bank charges 35, Nordvik paid in full.',conf:0.97,ev:[['Prepared','Dr 1000 Cash 2,499,965; Dr 5090 Bank charges 35 / Cr 1200 Contributions receivable LP-0023 2,500,000'],['Investor notice','Draft to Nordvik treasury: send future wires with charge code OUR so the fund receives the full amount']]}
+  ],
   beats:['Nordvik\'s wire is 35 under the amount asked','A bank fee in transit; the fund agreement allows absorbing under 100','Absorb the 35 and count Nordvik as paid, or decline and chase it'],
   fig:{cap:'Nordvik, this call',bars:[['Asked',2500000,2500000,''],['Received',2499965,2500000,'gap']],verdict:['35 short, a transfer fee','c']},
   btn:'Absorb 35, count Nordvik as paid',alt:'Decline, I will handle it',
@@ -195,17 +258,20 @@ var TOTAL=CASES.length+3; // intro, 4 cases, statement, client
 function go(s){ state.step=s; state.prov=null; render(); window.scrollTo({top:0}); }
 function render(){ var c=el('content'); var s=state.step; el('back').classList.toggle('hidden',s===0); var lbl=s===0?'Overnight':s<=CASES.length?'Case '+s+' of '+CASES.length:s===CASES.length+1?'Statement':'Client'; el('prog').innerHTML='<span>'+lbl+'</span>'+Array.apply(null,{length:TOTAL}).map(function(_,i){return '<i class="'+(i<=s?'on':'')+'"></i>';}).join(''); c.innerHTML=s===0?intro():s<=CASES.length?caseView(CASES[s-1],s):s===CASES.length+1?statement():client(); wire(c); }
 
-function intro(){ return '<div class="narrow"><h1 class="t">183 wires came in overnight.</h1><p class="sub">Fund IV, September capital call. Clearline matched each wire to an investor and booked it.</p><div class="meter"><div class="track"><i style="width:97.3%;background:var(--positive)"></i><i style="width:2.2%;background:var(--caution)"></i><i style="width:.5%;background:var(--line-strong)"></i></div><div class="leg"><span><b style="background:var(--positive)"></b>179 matched and booked, no person involved</span><span><b style="background:var(--caution)"></b>4 need you</span><span><b style="background:var(--line-strong)"></b>1 late, arrives tomorrow</span></div></div><div class="lead"><p>Each of the 4 is one screen: the bank lines, what Clearline found, and one button. '+who('you','Priya Naidoo, fund accountant')+'</p></div><div style="margin-top:24px;max-width:280px"><button class="b pri" data-go="1">See the first</button></div><p class="hint">About two minutes.</p></div>'; }
+function intro(){ return '<div class="narrow"><h1 class="t">183 wires came in overnight.</h1><p class="sub">Fund IV, September capital call. Clearline matched each wire to an investor and booked it.</p><div class="meter"><div class="track"><i style="width:97.3%;background:var(--positive)"></i><i style="width:2.2%;background:var(--caution)"></i><i style="width:.5%;background:var(--line-strong)"></i></div><div class="leg"><span><b style="background:var(--positive)"></b>179 matched and booked, no person involved</span><span><b style="background:var(--caution)"></b>4 need you</span><span><b style="background:var(--line-strong)"></b>1 late, arrives tomorrow</span></div></div><div class="agents"><div class="a"><p class="n">Intake agent</p><p class="v tnum">183</p><p class="l">bank lines read and filed; 1 duplicate document suppressed</p></div><div class="a"><p class="n">Matching agent</p><p class="v tnum">182</p><p class="l">lines matched to an investor, the call, the facility or the fee</p></div><div class="a"><p class="n">Reconciliation agent</p><p class="v tnum">4</p><p class="l">differences explained with a cause; cash ties to the cent</p></div><div class="a"><p class="n">Posting agent</p><p class="v tnum">179</p><p class="l">entries posted above the 0.90 threshold; 4 held for a person</p></div></div><div class="lead"><p>Four narrow agents, each with a name, a job and a confidence. Where one stops, you start. '+who('you','Priya Naidoo, fund accountant')+'</p></div><div style="margin-top:24px;max-width:280px"><button class="b pri" data-go="1">See the first</button></div><p class="hint">About two minutes.</p></div>'; }
 
 function stmtTable(st,done){ return '<div class="doc"><div class="hd"><b>'+st.title+'</b><span>'+st.sub+'</span></div><div class="tscroll"><table class="tnum"><tr><th>Line</th><th>Date</th><th>Description</th><th class="num">Amount</th></tr>'+st.rows.map(function(r){ var cls=r[4]==='hl'?(done?'ok':'hl'):r[4]; return '<tr class="'+cls+'"><td>'+r[0]+'</td><td>'+r[1]+'</td><td class="desc">'+esc(r[2])+'</td><td class="num">'+amt(r[3])+'</td></tr>'; }).join('')+'</table></div></div>'; }
 function recCard(r){ return '<div class="rec'+(r.pick?' pick':'')+'"><span class="tag '+r.tag[1]+'">'+r.tag[0]+'</span><p class="nm">'+r.nm+'</p><dl>'+r.kv.map(function(k){return '<dt>'+k[0]+'</dt><dd>'+k[1]+'</dd>';}).join('')+'</dl></div>'; }
 function entryBox(e,status){ return '<div class="entry '+status+'"><div class="hd">'+(status==='posted'?'Posted through the ledger\'s validation':e.hd)+'</div>'+e.ln.map(function(l){return '<div class="ln"><span>'+l[0]+'</span><span class="tnum">'+l[1]+'</span></div>';}).join('')+'</div>'; }
 function fig(f,done){ var max=Math.max.apply(null,f.bars.map(function(b){return Math.max(b[1],b[2]);})); return '<div class="fig"><p class="cap">'+f.cap+'</p>'+f.bars.map(function(b){ var base=Math.min(b[1],b[2]); var w=Math.round(b[1]/max*100); var wb=Math.round(base/max*100); var ex=b[3]; var inner=ex==='extra'?'<i style="width:'+wb+'%"></i><i class="extra" style="left:'+wb+'%;width:'+(w-wb)+'%"></i>':ex==='gap'?'<i style="width:'+w+'%"></i><i class="gap" style="left:'+w+'%;width:'+Math.max(1,Math.round((b[2]-b[1])/max*100))+'%"></i>':'<i style="width:'+w+'%"></i>'; return '<div class="bar"><span class="l">'+b[0]+'</span><span class="t">'+inner+'</span><span class="v tnum">'+n0(b[1])+'</span></div>'; }).join('')+'<p class="verdict '+(done?'p':f.verdict[1])+'">'+(done?'Settled':f.verdict[0])+'</p></div>'; }
 function beats(k,d){ var labels=['Spotted','Checked','Your call']; return '<div class="beats">'+k.beats.map(function(b,i){ return '<div class="beat'+((i===2&&!d)||(d&&i===2)?' on':'')+'"><p class="n">'+(i+1)+' · '+labels[i]+'</p><p class="x">'+(i===2&&d?(d==='done'?'Done: '+k.btn:'Declined; handled manually'):b)+'</p></div>'; }).join('')+'</div>'; }
+function confHtml(c){ return '<span class="conf'+(c<0.9?' lo':'')+'"><i><b style="width:'+Math.round(c*100)+'%"></b></i>'+c.toFixed(2)+'</span>'; }
+function pipe(k,d){ var names=['Intake','Matching','Reconciliation','Posting']; return '<div class="pipe">'+names.map(function(nm,i){ var a=k.agents[i]; var cls=d?'done':(a.stop?'stop':'done'); return (i?'<span class="arrow">→</span>':'')+'<span class="ag '+cls+'"><i></i>'+nm+(a.stop&&!d?': needs you':'')+'</span>'; }).join('')+'</div>'; }
+function trace(k,d){ return '<ol class="trace">'+k.agents.map(function(a){ return '<li class="'+(a.stop&&!d?'stop':'')+'"><div class="hd"><span class="nm">'+a.n+' agent</span><span class="at">'+a.at+'</span>'+(a.conf!=null?confHtml(a.conf):'')+'</div><p class="did">'+a.did+'</p><details><summary>What it read and why</summary><div class="ev"><dl>'+a.ev.map(function(e){return '<dt>'+e[0]+'</dt><dd>'+e[1]+'</dd>';}).join('')+'</dl></div></details></li>'; }).join('')+(d?'<li class="you"><div class="hd"><span class="nm">Priya Naidoo</span><span class="at">now</span></div><p class="did">'+(d==='done'?'Accepted: '+k.btn+'. Posted through the ledger\'s validation with her name.':'Declined. Handled manually; counted as an override.')+'</p></li>':'')+'</ol>'; }
 function caseView(k,i){ var d=state.done[k.id]; var next=i<CASES.length?i+1:CASES.length+1;
   return '<h1 class="t">'+k.title+'</h1><p class="sub">Case '+i+' of '+CASES.length+' · '+who('you','Priya Naidoo, fund accountant')+'</p>'+beats(k,d)+
   '<div class="cols"><div class="col"><h2><span class="num">1</span>What came in</h2>'+stmtTable(k.stmt,!!d)+'</div>'+
-  '<div class="col"><h2><span class="num">2</span>What Clearline found</h2>'+fig(k.fig,d==='done')+k.recs.map(recCard).join('')+'<p class="say">'+k.say+'</p>'+entryBox(k.entry,d==='done'?'posted':'pending')+'</div>'+
+  '<div class="col"><h2><span class="num">2</span>What the agents did</h2>'+pipe(k,d)+fig(k.fig,d==='done')+trace(k,d)+entryBox(k.entry,d==='done'?'posted':'pending')+'</div>'+
   '<div class="col"><h2><span class="num">3</span>Your call</h2>'+(d?'<div class="done"><b>'+(d==='done'?'Recorded':'Declined')+'</b>'+(d==='done'?'With your name. Nothing was sent.':'Nothing was posted.')+'</div><p class="after">'+(d==='done'?k.after:'Counted as an override for the evals.')+'</p><div class="next"><button class="b pri" data-go="'+next+'">'+(i<CASES.length?'Next case':'Go to the statements')+'</button></div>':'<button class="b pri" data-do="'+k.id+'">'+k.btn+'</button><button class="b" data-decline="'+k.id+'">'+k.alt+'</button><p class="hint">Nothing sends. Your decision is recorded with your name.</p>')+'</div></div>'; }
 
 function statement(){ var src=state.prov!=null?SRC[LP[state.prov][3]]:'';
