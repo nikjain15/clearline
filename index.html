@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Clearline: agentic fund operations for private markets. Agents propose, people release. A product demo on synthetic data.">
+<title>Clearline Fund Ops</title>
+</head>
+<body>
+<style>
+/* Clearline, linear edition, on the Relay design system (tokens verbatim from app/tokens.css).
+   One path, five steps, one action per screen. Reading column 720px. Hairlines, not cards. Colour only for status. */
+:root {
+  --ink: #1a1a1a; --ink-2: #5c5c5c; --ink-3: #686868; --line: #e4e2dd; --line-strong: #bcb9b2;
+  --surface: #ffffff; --subtle: #f6f5f2; --selected: #ecebe6;
+  --critical: #b3121f; --critical-soft: #fbecec; --positive: #2d6a4f; --positive-soft: #e9f2ed; --caution: #7a5200; --caution-soft: #faf3e1;
+  --agent: #4a3f9a; --agent-soft: #edeaf7; --advisor: #0f5a8a; --advisor-soft: #e6f0f7; --client: #0e6b5e; --client-soft: #e4f1ee;
+  --font: "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif; --radius: 2px; --radius-lg: 8px;
+  --text-caption: 11px; --text-meta: 12px; --text-body: 13px; --text-lead: 14px; --text-brief: 15px; --text-heading: 16px; --text-brand: 17px; --text-stat: 20px; --text-stat-lg: 24px; --text-title: 28px; --text-display: 30px;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+html{font-family:var(--font)}
+body{margin:0;background:var(--surface);color:var(--ink);font-size:var(--text-lead);line-height:1.5;padding-block:0;padding-inline:0}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+a{color:var(--ink);text-underline-offset:3px}
+button{font:inherit}
+h1,h2,h3,p{margin:0}
+.meta{font-size:var(--text-meta)}.body{font-size:var(--text-body)}.caption{font-size:var(--text-caption)}.ink2{color:var(--ink-2)}.ink3{color:var(--ink-3)}.semi{font-weight:600}
+.tnum{font-variant-numeric:tabular-nums}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;height:56px;align-items:center;gap:16px;border-bottom:1px solid var(--line);background:var(--surface);padding:0 24px}
+.brand{font-size:var(--text-brand);font-weight:600;letter-spacing:-.01em}
+.steps{display:flex;gap:6px;align-items:center;margin-left:auto;font-size:var(--text-meta);color:var(--ink-3)}
+.steps i{display:inline-block;width:22px;height:2px;background:var(--line-strong)}
+.steps i.on{background:var(--ink)}
+.proto{font-size:var(--text-meta);color:var(--ink-3);white-space:nowrap}
+main{padding:40px 24px 80px}
+.col{max-width:720px;margin:0 auto}
+.col.wide{max-width:960px}
+.who{display:inline-flex;align-items:center;gap:4px;border-radius:var(--radius);padding:0 6px;font-size:var(--text-caption);font-weight:500;margin-right:8px;vertical-align:middle}
+.who i{display:inline-block;width:6px;height:6px;border-radius:50%}
+.who.agent{background:var(--agent-soft);color:var(--agent)}.who.agent i{background:var(--agent)}
+.who.you{background:var(--advisor-soft);color:var(--advisor)}.who.you i{background:var(--advisor)}
+.who.client{background:var(--client-soft);color:var(--client)}.who.client i{background:var(--client)}
+.persona{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;border:1px solid var(--line);background:var(--subtle);padding:8px 12px;border-radius:var(--radius);font-size:var(--text-meta);color:var(--ink-2);margin-bottom:24px}
+.persona b{color:var(--ink);font-weight:500}
+h1.t{font-size:var(--text-title);font-weight:300;line-height:1.15;letter-spacing:-.01em}
+p.sub{margin-top:8px;color:var(--ink-2)}
+.brief{margin:28px 0;border:1px solid color-mix(in srgb,var(--agent) 30%,transparent);background:color-mix(in srgb,var(--agent-soft) 40%,var(--surface));border-radius:var(--radius-lg);padding:20px;display:flex;gap:12px}
+.brief .av{display:inline-flex;height:36px;width:36px;flex:none;align-items:center;justify-content:center;border-radius:50%;background:var(--agent-soft);color:var(--agent);margin-top:2px}
+.brief .nm{font-size:var(--text-meta);color:var(--ink-3)}.brief .nm b{color:var(--agent);font-weight:500}
+.brief .says{margin-top:4px;font-size:var(--text-brief);line-height:1.6}
+.b{display:inline-flex;min-height:36px;align-items:center;border-radius:var(--radius);padding:6px 14px;line-height:1.3;font-size:var(--text-lead);border:1px solid var(--ink);background:var(--surface);color:var(--ink);cursor:pointer;text-decoration:none}
+.b:hover{background:var(--subtle)}
+.b.pri{background:var(--ink);color:var(--surface)}.b.pri:hover{opacity:.85;background:var(--ink)}
+.b[disabled]{opacity:.4;cursor:not-allowed}
+.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:28px}
+.actions .hint{font-size:var(--text-meta);color:var(--ink-3)}
+.pill{display:inline-block;white-space:nowrap;border-radius:var(--radius);padding:0 6px;font-size:var(--text-meta);line-height:16px;font-weight:500;vertical-align:middle}
+.pill.n{background:var(--subtle);color:var(--ink-2)}.pill.p{background:var(--positive-soft);color:var(--positive)}.pill.f{background:var(--critical-soft);color:var(--critical)}.pill.c{background:var(--caution-soft);color:var(--caution)}
+.dot{display:inline-flex;align-items:center;gap:6px;font-size:var(--text-meta);color:var(--ink-2);white-space:nowrap}
+.dot i{display:inline-block;height:8px;width:8px;border-radius:50%}
+.dot.clear i{background:var(--positive)}.dot.att i{background:var(--caution)}.dot.block i{background:var(--critical)}
+.card{border:1px solid var(--line);border-radius:var(--radius);padding:24px;margin-top:20px}
+.card .k{font-size:var(--text-meta);color:var(--ink-3);margin-bottom:4px}
+.card .story{font-size:var(--text-heading);line-height:1.5}
+.card .found,.card .prop{margin-top:16px;font-size:var(--text-lead);line-height:1.55}
+.card .found b,.card .prop b{font-weight:600}
+.counter{font-size:var(--text-meta);color:var(--ink-3);margin-top:8px}
+details.why{margin-top:16px;font-size:var(--text-body)}
+details.why summary{cursor:pointer;color:var(--ink-2);text-decoration:underline;text-decoration-color:var(--line-strong)}
+details.why>div{margin-top:10px;border-left:1px solid var(--line);padding-left:12px;color:var(--ink-2)}
+dl.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:var(--text-body);margin:0}
+dl.kv dt{color:var(--ink-3)}dl.kv dd{margin:0;color:var(--ink-2);overflow-wrap:anywhere}
+.rows{border:1px solid var(--line);border-radius:var(--radius);padding:0 16px;margin-top:20px}
+.row{display:flex;gap:12px;align-items:flex-start;padding:12px 4px;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.row>svg{flex:none;margin-top:2px;color:var(--ink-3)}
+.row.pos>svg{color:var(--positive)}.row.caut>svg{color:var(--caution)}.row.crit>svg{color:var(--critical)}
+.row .bd{min-width:0;flex:1}
+.row .t{display:block;font-size:var(--text-lead)}
+.row .m{display:block;margin-top:2px;font-size:var(--text-meta);color:var(--ink-3)}
+.row .r{flex:none;align-self:center}
+.done{display:flex;gap:10px;align-items:flex-start;border:1px solid color-mix(in srgb,var(--positive) 40%,transparent);background:var(--positive-soft);border-radius:var(--radius);padding:12px 14px;margin-top:20px;font-size:var(--text-body)}
+.done svg{flex:none;color:var(--positive);margin-top:1px}
+table{width:100%;border-collapse:collapse;font-size:var(--text-body)}
+th{border-bottom:1px solid var(--line-strong);padding:8px 12px;text-align:left;font-size:var(--text-meta);line-height:16px;font-weight:400;color:var(--ink-2)}
+td{border-bottom:1px solid var(--line);padding:10px 12px;vertical-align:top}
+td.num,th.num{text-align:right;white-space:nowrap}
+tr.clk{cursor:pointer}tr.clk:hover td{background:var(--subtle)}tr.sel td{background:var(--selected)}
+.tscroll{overflow-x:auto;margin-top:20px}
+.source{margin-top:12px;border-left:2px solid var(--ink);padding:8px 12px;background:var(--subtle);font-size:var(--text-body);color:var(--ink-2)}
+.source b{color:var(--ink);font-weight:600}
+.cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}
+.fc{border:1px solid var(--line);border-radius:var(--radius);padding:16px;min-width:0}
+.fc h3{font-size:var(--text-lead);font-weight:600}.fc p{margin-top:4px;font-size:var(--text-body);color:var(--ink-2)}
+.fc.focus{box-shadow:inset 0 0 0 2px var(--ink)}
+.ask{margin-top:24px}
+.ask .q{display:flex;gap:8px}
+.ask input{height:40px;flex:1;min-width:0;border:1px solid var(--line-strong);background:var(--surface);padding:0 10px;font-size:var(--text-lead);color:var(--ink);border-radius:var(--radius)}
+.answer{margin-top:14px;border:1px solid color-mix(in srgb,var(--agent) 30%,transparent);background:color-mix(in srgb,var(--agent-soft) 40%,var(--surface));padding:14px 16px;border-radius:var(--radius);font-size:var(--text-lead);line-height:1.6}
+.answer .src{margin-top:10px;font-size:var(--text-caption);color:var(--ink-3)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.chip{border:1px solid var(--line);background:var(--subtle);padding:4px 10px;font-size:var(--text-meta);color:var(--ink-2);border-radius:var(--radius);cursor:pointer}
+.chip:hover{background:var(--selected)}
+.section{margin-top:40px}
+.section>h2{font-size:var(--text-brief);font-weight:600;margin-bottom:12px}
+.princ{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.princ .p{border:1px solid var(--line);border-radius:var(--radius);padding:16px;min-width:0}
+.princ .p h3{font-size:var(--text-lead);font-weight:600}.princ .p p{margin-top:4px;font-size:var(--text-body);color:var(--ink-2)}
+.gate{display:grid;grid-template-columns:1fr auto auto;gap:8px 12px;align-items:center;font-size:var(--text-body)}
+.gate .k{color:var(--ink-2)}.gate .e{font-size:var(--text-meta);color:var(--ink-3);white-space:nowrap}
+input[type=range]{width:140px;accent-color:var(--ink)}
+.bars{display:grid;grid-template-columns:auto 1fr auto;gap:6px 12px;align-items:center;font-size:var(--text-body)}
+.bars .lb{color:var(--ink-2)}.bars .tr{height:1.5px;background:var(--line)}.bars .tr i{display:block;height:100%;background:var(--ink)}
+.bars .vl{font-size:var(--text-meta);color:var(--ink-2);white-space:nowrap}
+.timeline{list-style:none;margin:0;padding:0 0 0 20px;border-left:1px solid var(--line)}
+.timeline li{position:relative;padding-bottom:14px}.timeline li:last-child{padding-bottom:0}
+.timeline li>span.ic{position:absolute;left:-31px;top:3px;display:flex;height:20px;width:20px;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:50%;background:var(--surface);color:var(--ink-3)}
+.timeline .at{display:block;font-size:var(--text-caption);color:var(--ink-3)}
+.timeline .tt{display:block;font-size:var(--text-body)}
+.toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--surface);padding:8px 14px;border-radius:var(--radius);font-size:var(--text-body);opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw;z-index:9}
+.toast.show{opacity:1}
+.hidden{display:none !important}
+.back{font-size:var(--text-meta);color:var(--ink-3);background:none;border:0;cursor:pointer;padding:0;text-decoration:underline;text-decoration-color:var(--line-strong)}
+@media(max-width:720px){.top{padding:0 16px}main{padding:24px 16px 60px}.cards3,.princ{grid-template-columns:1fr}.gate{grid-template-columns:1fr auto}.gate .e{grid-column:1/-1;white-space:normal}.proto,.steps span.lbl{display:none}.card{padding:18px}}
+@media (prefers-reduced-motion: reduce){.toast{transition:none}}
+</style>
+
+<header class="top">
+  <span class="brand">Clearline</span>
+  <button class="back hidden" id="back">Back</button>
+  <span class="steps" id="steps"></span>
+  <span class="proto">Prototype · synthetic data</span>
+</header>
+<main><div class="col" id="content"></div></main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+var P={agent:'<path d="M12 3l1.9 4.6L18.5 9.5l-4.6 1.9L12 16l-1.9-4.6L5.5 9.5l4.6-1.9z"/><path d="M18 16.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/>',people:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.3 2.9-6 6.5-6s6.5 2.7 6.5 6"/><path d="M16 5.2a3.5 3.5 0 0 1 0 5.6M17.5 14.4c2.3.7 4 2.9 4 5.6"/>',check:'<path d="M4.5 12.5l5 5 10-11"/>',alert:'<path d="M12 4l8.5 15H3.5z"/><path d="M12 9.5v4.5M12 16.8v.2"/>',clock:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7v5.5l3.5 2"/>',flag:'<path d="M5.5 21V4"/><path d="M5.5 4.5h12l-2.5 4 2.5 4h-12"/>',custodian:'<path d="M3.5 9.5 12 4l8.5 5.5"/><path d="M5.5 9.5v10h13v-10M9.5 19.5v-6h5v6"/>',conflict:'<path d="M4 8h10.5"/><path d="M11.5 5l3 3-3 3"/><path d="M20 16H9.5"/><path d="M12.5 13l-3 3 3 3"/>',document:'<path d="M6 3.5h8l4.5 4.5v12.5H6z"/><path d="M13.5 3.5V8h4.5M9 12.5h6M9 16h6"/>',esign:'<path d="M3.5 17.5c3-1 4-8 6.5-8s1.5 8 4 8 2.5-3.5 6.5-3.5"/><path d="M3.5 20.5h17"/>'};
+function ic(n,s){ s=s||20; return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+P[n]+'</svg>'; }
+function who(w,l){ return '<span class="who '+w+'"><i></i>'+(l||{agent:'Agent',you:'You',client:'Client'}[w])+'</span>'; }
+function pill(t,c){ return '<span class="pill '+c+'">'+t+'</span>'; }
+function dot(s){ return '<span class="dot '+s+'"><i></i>'+{clear:'Clear',att:'Needs you',block:'Blocking'}[s]+'</span>'; }
+function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+function el(id){ return document.getElementById(id); }
+function fmt(n,d){ d=d==null?2:d; var s=Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}); return n<0?'('+s+')':s; }
+function fmt0(n){ return fmt(n,0); }
+function toast(m){ var t=el('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(function(){t.classList.remove('show');},2000); }
+function rng(seed){ var t=seed>>>0; return function(){ t+=0x6D2B79F5; var r=Math.imul(t^(t>>>15),1|t); r^=r+Math.imul(r^(r>>>7),61|r); return ((r^(r>>>14))>>>0)/4294967296; }; }
+var R=rng(20261002); function pick(a){ return a[Math.floor(R()*a.length)]; }
+function sim(a,b){ a=a.toUpperCase().replace(/[^A-Z ]/g,'').split(/\s+/).filter(function(w){return w.length>2 && !/^(THE|AND|REF|INC|LLC|LP|AS|SA|OF|FUND|VII|IV|MGP)$/.test(w);}); b=b.toUpperCase().replace(/[^A-Z ]/g,'').split(/\s+/).filter(function(w){return w.length>2;}); if(!a.length) return 0; var h=0; a.forEach(function(w){ if(b.some(function(x){return x.indexOf(w.slice(0,5))===0;})) h++; }); return h/a.length; }
+
+var FUND={size:850e6,lpCommit:833e6,pct:0.05,feeGL:4237500,offset:12500};
+var NAMED=[{id:'LP-0007',name:"Ohio Valley Teachers' Retirement Alliance",type:'Public pension',commit:75e6},{id:'LP-0023',name:'Nordvik Pensjon AS',type:'Insurer',commit:50e6},{id:'LP-0041',name:'Stratton University Endowment',type:'Endowment / foundation',commit:40e6},{id:'LP-0042',name:'Stratton University Foundation',type:'Endowment / foundation',commit:5e6},{id:'LP-0058',name:'Lindqvist Försäkring Group S.A.',type:'Insurer',commit:35e6},{id:'LP-0096',name:'Bayfront Secondary and Primary Fund VII, L.P.',type:'Fund of funds',commit:25e6},{id:'LP-0133',name:'Carraway Family Holdings LLC',type:'Family office / HNW',commit:10e6}];
+var TYPES=[['Public pension',0.22],['Family office / HNW',0.24],['Endowment / foundation',0.18],['Insurer',0.15],['Fund of funds',0.14],['Corporate pension',0.07]];
+var PLACES=['Cumberland','Tahoma','Red River','Blue Ridge','Harrow','Kestrel','Mapleton','Oakridge','Silverlake','Northfield','Greywater','Alder','Pinecrest','Westbrook','Lanark','Fenwick','Hollis','Marlow','Thornbury','Ashcombe','Brightwater','Clearfield','Dunmore','Elmhurst','Fairhaven','Glenmoor','Hartwell','Ivybridge','Kingsmere','Larchmont','Moorfield','Newhaven','Oriel','Pembury','Quarrington','Ravenswood','Sedgefield','Tamarack','Upton','Valemont','Whitfield','Yarrow','Ardmore','Beaumont','Calder','Dalton','Everly','Foxhall'];
+var SUFFIX={'Public pension':["County Employees' Retirement System","Teachers' Retirement Fund","Municipal Pension Board","State Employees' Retirement Trust","Firefighters' Pension Fund"],'Family office / HNW':['Family Holdings LLC','Family Office Ltd','Partners Family Trust','Capital LLC','Investments LP'],'Endowment / foundation':['University Endowment','College Foundation','Charitable Foundation','Hospital Endowment Fund','Institute Trust'],'Insurer':['Mutual Insurance Co.','Life Assurance plc','Re AG','Versicherung AG','Insurance Group S.A.'],'Fund of funds':['Private Equity Fund IX, L.P.','Secondaries III SCSp','Multi-Strategy Fund V LP','Access Fund II','Partners Fund XII, L.P.'],'Corporate pension':['Pension Plan Trust','Employees Retirement Plan','Staff Pension Scheme','Corporate Pension Fund']};
+var LPS=NAMED.slice();
+(function(){ var used={}; NAMED.forEach(function(l){used[l.name]=1;}); var remaining=FUND.lpCommit-NAMED.reduce(function(s,l){return s+l.commit;},0); var n=180-NAMED.length; var raw=[]; for(var i=0;i<n;i++) raw.push(Math.exp(R()*1.6)); var sum=raw.reduce(function(a,b){return a+b;},0); var acc=0; var ids={}; NAMED.forEach(function(l){ids[l.id]=1;}); var usedC={}; NAMED.forEach(function(l){usedC[l.commit]=1;}); for(var j=0;j<n;j++){ var c=Math.max(1e6,Math.round(raw[j]/sum*remaining/1e4)*1e4); if(j===n-1) c=remaining-acc; while(usedC[c]) c+=1e4; usedC[c]=1; acc+=c; var r=R(),cum=0,type=TYPES[0][0]; for(var k=0;k<TYPES.length;k++){cum+=TYPES[k][1]; if(r<cum){type=TYPES[k][0];break;}} var name; do{ name=pick(PLACES)+' '+pick(SUFFIX[type]); }while(used[name]); used[name]=1; var id; do{ id='LP-'+String(1+Math.floor(R()*199)).padStart(4,'0'); }while(ids[id]); ids[id]=1; LPS.push({id:id,name:name,type:type,commit:c}); } LPS.sort(function(a,b){return a.id<b.id?-1:1;}); })();
+var LPBY={}; LPS.forEach(function(l){ LPBY[l.id]=l; l.call=Math.round(l.commit*FUND.pct); l.pct=l.commit/FUND.size; });
+var BANK=[]; var seq=1; function line(d,desc,amt,x){ var o={n:seq++,date:d,desc:desc,amt:amt}; for(var k in (x||{})) o[k]=x[k]; BANK.push(o); return o; }
+line('12 Sep','FACILITY DRAW HARBOR NATL SUBLINE MGP IV',38e6,{kind:'facility'}); line('12 Sep','WIRE OUT HALCYON DENTAL HLDGS ESCROW CLOSING',-38e6,{kind:'investment'});
+(function(){ LPS.forEach(function(l){ if(l.id==='LP-0133') return; var r=R(); var day=r<0.08?'22 Sep':r<0.2?'24 Sep':r<0.4?'26 Sep':r<0.6?'28 Sep':'29 Sep'; var up=l.name.toUpperCase().replace(/[^A-Z0-9 ]/g,'').replace(/\b(THE|AND)\b/g,'').replace(/\s+/g,' ').trim().split(' ').slice(0,4).join(' '); var rr=R();
+  if(l.id==='LP-0023') return line('29 Sep','INCOMING WIRE NORDVIK PENSJON AS REF CC009',l.call-35,{lp:l.id,kind:'receipt'});
+  if(l.id==='LP-0041') return line('30 Sep','INCOMING WIRE STRATTON UNIV FOUNDATION REF MGP4',l.call,{lp:l.id,kind:'receipt'});
+  if(l.id==='LP-0042') return line('30 Sep','INCOMING WIRE STRATTON UNIV FDN REF MGP IV CC-009 LP-0042',l.call,{lp:l.id,kind:'receipt'});
+  if(l.id==='LP-0096'){ line('29 Sep','INCOMING WIRE BAYFRONT SEC PRIM VII LP CC-009',l.call,{lp:l.id,kind:'receipt'}); return line('29 Sep','INCOMING WIRE BAYFRONT SEC PRIM VII LP CC-009',l.call,{lp:l.id,kind:'receipt'}); }
+  if(l.id==='LP-0007') return line('26 Sep','INCOMING WIRE OHIO VALLEY TRA REF MGP IV CC-009 LP-0007',l.call,{lp:l.id,kind:'receipt'});
+  var ref=rr<0.86?'REF MGP IV CC-009 '+l.id:rr<0.95?'REF CC-009':'REF MERIDIAN IV'; var amt=l.call; var sh=R(); if(sh<0.012) amt-=15; else if(sh<0.024) amt-=20; line(day,'INCOMING WIRE '+up+' '+ref,amt,{lp:l.id,kind:'receipt'}); }); })();
+line('30 Sep','WIRE OUT MERIDIAN CAPITAL ADVISORS LLC MGMT FEE Q4',-4.25e6,{kind:'fee'});
+var ORD={'12 Sep':12,'22 Sep':22,'24 Sep':24,'26 Sep':26,'28 Sep':28,'29 Sep':29,'30 Sep':30}; BANK.sort(function(a,b){ return ORD[a.date]-ORD[b.date]||a.n-b.n; });
+
+var state={step:0,gate:{post:0.90,tol:25},decisions:{},audit:[],valuation:false,released:false,prov:null,lp:'LP-0023',turns:[],overrides:0};
+function audit(agent,what,by,w){ state.audit.unshift({t:'Day 2, '+String(8+Math.floor(state.audit.length/3)).padStart(2,'0')+':'+String((state.audit.length*17+5)%60).padStart(2,'0'),agent:agent,what:what,by:by,who:w||'you'}); }
+audit('Posting','posted 179 bank lines inside policy','auto','agent'); audit('Intake','filed 9 documents, suppressed 1 duplicate','auto','agent');
+
+function analyze(){ var seen={}; var out=[]; BANK.forEach(function(b){ var r={line:b,conf:0,flag:'',lp:null,kind:b.kind,status:'auto',dr:'',cr:'',tolAbs:0};
+  if(b.kind==='facility'){ r.conf=0.98; r.dr='1000 Cash'; r.cr='2010 Facility payable'; }
+  else if(b.kind==='investment'){ r.conf=0.95; r.dr='1100 Investments at cost'; r.cr='1000 Cash'; }
+  else if(b.kind==='fee'){ r.conf=0.66; r.dr='5010 Management fee expense 4,250,000'; r.cr='1000 Cash 4,250,000'; r.flag='fee'; r.status='review'; }
+  else { var m=/LP-\d{4}/.exec(b.desc); var idLp=m?LPBY[m[0]]:null; var amtLps=LPS.filter(function(l){return Math.abs(l.call-b.amt)<=100;}); var payer=b.desc.replace(/INCOMING WIRE/,'').replace(/REF.*$/,''); var nameLps=LPS.map(function(l){return {l:l,s:sim(payer,l.name)};}).filter(function(x){return x.s>=0.5;}).sort(function(a,b){return b.s-a.s;}); var cand=null;
+    if(idLp&&Math.abs(idLp.call-b.amt)<=100){ cand=idLp; r.conf=0.99; } else if(idLp){ cand=idLp; r.conf=0.80; }
+    else if(amtLps.length===1){ cand=amtLps[0]; var ns=sim(payer,cand.name); r.conf=ns>=0.5?0.93:0.74; if(nameLps.length&&nameLps[0].l.id!==cand.id&&nameLps[0].s>ns){ r.conf=0.74; r.flag='name'; } }
+    else if(amtLps.length>1&&nameLps.length){ cand=nameLps[0].l; r.conf=0.85; } else if(nameLps.length){ cand=nameLps[0].l; r.conf=0.70; }
+    if(cand){ r.lp=cand.id; var short=cand.call-b.amt; if(seen[cand.id]){ r.conf=Math.min(r.conf,0.58); r.flag='dup'; r.dr='1000 Cash '+fmt0(b.amt); r.cr='2310 Contributions received in advance, '+cand.id; }
+      else { seen[cand.id]=b.n; if(short>0&&short<=state.gate.tol){ r.tolAbs=short; r.dr='1000 Cash; 5090 Bank charges '+fmt0(short); r.cr='1200 Contributions receivable, '+cand.id; } else if(short>0){ r.flag='short'; r.dr='1000 Cash '+fmt0(b.amt)+'; 5090 Bank charges '+fmt0(short); r.cr='1200 Contributions receivable, '+cand.id+' '+fmt0(cand.call); r.conf=0.97; r.status='review'; } else { r.dr='1000 Cash'; r.cr='1200 Contributions receivable, '+cand.id; } } }
+    else { r.conf=0.3; r.flag='unknown'; r.status='review'; } }
+  if(r.status!=='review'&&r.conf<state.gate.post) r.status='review'; var d=state.decisions[b.n]; if(d){ r.status=d.status; r.decision=d; } out.push(r); }); return out; }
+var ROWS; function recompute(){ ROWS=analyze(); }
+function received(){ var rec={}; ROWS.forEach(function(r){ if(r.kind==='receipt'&&r.lp&&r.flag!=='dup'&&r.status!=='rejected') rec[r.lp]=true; }); return rec; }
+function closing(){ return BANK.reduce(function(s,b){return s+b.amt;},1214350.22); }
+var NORD={beg:31900000,inc:18400,off:735,exp:-14700,unreal:1120000,carry:-170000,itd:{contrib:33500000,dist:-6200000,inc:412800,off:18900,exp:-196400,real:4330000,unreal:7230000,carry:-1741600}};
+function stmt(lp){ var f=lp.commit/50e6; function sc(v){return Math.round(v*f);} var q={beg:sc(NORD.beg),contrib:lp.call,dist:0,inc:sc(NORD.inc),fee:-Math.round(lp.commit*0.02/4),off:sc(NORD.off),exp:sc(NORD.exp),real:0,unreal:sc(NORD.unreal),carry:sc(NORD.carry)}; q.end=q.beg+q.contrib+q.dist+q.inc+q.fee+q.off+q.exp+q.real+q.unreal+q.carry; var i={contrib:sc(NORD.itd.contrib)-sc(2500000)+lp.call,dist:sc(NORD.itd.dist),inc:sc(NORD.itd.inc),fee:-Math.round(lp.commit*0.02/4*9),off:sc(NORD.itd.off),exp:sc(NORD.itd.exp),real:sc(NORD.itd.real),unreal:sc(NORD.itd.unreal),carry:sc(NORD.itd.carry)}; i.end=q.end; i.unfunded=lp.commit-i.contrib; return {q:q,i:i}; }
+
+function items(){ recompute(); var list=[];
+  var dup=ROWS.find(function(r){return r.flag==='dup';}); if(dup) list.push({key:dup.line.n,row:dup,title:'Bayfront paid twice',story:'Bayfront Secondary and Primary Fund VII sent 1,250,000 on 29 September, then sent the same 1,250,000 again a minute later.',found:'The first payment already covered everything Bayfront owed on this call. The second has the same payer, amount and date. When that happens it is almost always a payment system re-sending after a timeout.',prop:'Hold the second payment separately so it never counts as a contribution, and start a refund. The refund itself waits for the controller, after a call-back to Bayfront on the number already on file.',btn:'Hold the duplicate and start the refund',why:{'Bank line':dup.line.date+', line '+dup.line.n+', '+fmt(dup.line.amt),'Investor':'LP-0096, fund of funds, commitment 25,000,000, called 1,250,000','Proposed entry':'Dr '+dup.dr+' / Cr '+dup.cr,'Confidence':dup.conf.toFixed(2)+', below the posting threshold of '+state.gate.post.toFixed(2)+', so it waited for you','Seen before':'No. First time for this investor.','Control':'Refund instructions arrived by letter; they are not used until the call-back is logged.'}});
+  var nm=ROWS.find(function(r){return r.flag==='name';}); if(nm) list.push({key:nm.line.n,row:nm,title:'Two investors, one name',story:'A 2,000,000 payment arrived on 30 September from "Stratton Univ Foundation" with no investor reference.',found:'Two investors share that name. The Foundation was asked for 250,000 and has already paid it. The Endowment was asked for exactly 2,000,000 and has not. The amount points to the Endowment. The same mix-up happened on the sixth call.',prop:'Record it as the Endowment\'s contribution. Change the matching rule so a name alone is never enough: an investor reference or an exact amount is required.',btn:'Record it for the Endowment',why:{'Bank line':nm.line.date+', line '+nm.line.n+', '+fmt(nm.line.amt),'Investors':'LP-0041 Stratton University Endowment, called 2,000,000; LP-0042 Stratton University Foundation, called 250,000, received separately','Proposed entry':'Dr 1000 Cash / Cr 1200 Contributions receivable, LP-0041','Confidence':nm.conf.toFixed(2)+'. The amount matched one investor; the name string matched the other.','Seen before':'Yes, CC-006, same two investors, resolved the same way.'}});
+  var fee=ROWS.find(function(r){return r.flag==='fee';}); if(fee) list.push({key:fee.line.n,row:fee,title:'The management fee was paid gross',story:'The manager paid itself the quarterly fee of 4,250,000 on 30 September. The books expected 4,237,500.',found:'In August a portfolio company paid the manager 12,500 in director fees. Under the fund agreement that amount comes off the management fee. It was added to the offset schedule on 18 September, after the fee invoice had already been approved.',prop:'Keep the books at 4,237,500. Record 12,500 as owed back by the manager and take it off next quarter\'s fee. Add a control: lock the offset schedule before the fee invoice is approved.',btn:'Record 12,500 owed by the manager',why:{'Bank line':fee.line.date+', line '+fee.line.n+', '+fmt(fee.line.amt),'Fee basis':'2.0% a year on 850,000,000 commitments, quarterly in advance, 100% offset of director and transaction fees','Proposed entry':'Dr 1300 Due from manager 12,500 / Cr 5010 Management fee expense 12,500','Confidence':fee.conf.toFixed(2),'Seen before':'No. First time on this fund.'}});
+  var sh=ROWS.find(function(r){return r.flag==='short';}); if(sh) list.push({key:sh.line.n,row:sh,title:'Nordvik\'s payment is 35 short',story:'Nordvik Pensjon was asked for 2,500,000 and sent 2,499,965.',found:'A bank between Oslo and New York took 35 as a transfer fee. The fund agreement lets the fund absorb shortfalls under 100 rather than chase them. Nordvik\'s last two payments had the same fee.',prop:'Treat the 35 as a bank charge and count Nordvik as paid in full. Ask Nordvik to send future payments with the fee charged to them.',btn:'Absorb 35 as a bank charge',why:{'Bank line':sh.line.date+', line '+sh.line.n+', '+fmt(sh.line.amt),'Proposed entry':'Dr 1000 Cash 2,499,965; Dr 5090 Bank charges 35 / Cr 1200 Contributions receivable 2,500,000','Confidence':sh.conf.toFixed(2)+'. High, but the amount is above the fund\'s auto-absorb tolerance of '+fmt0(state.gate.tol)+', so it waited for you.','Tolerance':'Raise the auto-absorb tolerance to 50 in the appendix and this item settles itself next time.','Seen before':'Yes, CC-004 and CC-007, same investor, same fee.'}});
+  return list; }
+function settle(it){ var r=it.row; state.decisions[r.line.n]={status:r.flag==='dup'?'held':'posted',by:'Priya Naidoo'}; audit('Posting',(r.flag==='dup'?'held a duplicate, refund drafted: ':'posted as proposed: ')+it.title,'Priya Naidoo','you'); }
+
+var STEPS=['Overnight','Settle','The close','Signed','The client'];
+function go(n){ state.step=n; state.prov=null; render(); window.scrollTo({top:0}); }
+function render(){ recompute(); var c=el('content'); c.className='col'+(state.step===5?' wide':''); el('steps').innerHTML=(state.step<5?'<span class="lbl">Step '+(state.step+1)+' of 5 · '+STEPS[state.step]+'</span>':'<span class="lbl">Appendix</span>')+STEPS.map(function(_,i){return '<i class="'+(i<=state.step?'on':'')+'"></i>';}).join(''); el('back').classList.toggle('hidden',state.step===0); c.innerHTML=[s0,s1,s2,s3,s4,s5][state.step](); wire(c); }
+function persona(w,name,role,when){ return '<p class="persona">'+ic('people',16)+'<span>'+who(w)+'<b>'+name+'</b>, '+role+'</span><span class="ink3" aria-hidden="true">·</span><span>'+when+'</span></p>'; }
+function brief(name,says){ return '<section class="brief" aria-label="'+name+'"><span class="av">'+ic('agent',20)+'</span><div style="min-width:0;flex:1"><p class="nm"><b>'+name+'</b> · ran overnight</p><p class="says">'+says+'</p></div></section>'; }
+
+function s0(){ var q=items().length; var autoN=ROWS.filter(function(r){return r.status==='auto';}).length;
+  return persona('you','Priya Naidoo','fund accountant','Thursday, 8:30am, day 2 of the September close')+'<h1 class="t">Fund IV, September close</h1><p class="sub">One fund, one month of cash, and the few things a person has to decide.</p>'+
+  brief('Clearline','Overnight I read <b>183 bank lines</b>, the capital call notice and the fee invoice for Fund IV. <b>'+autoN+' lines are settled</b> and already in the books. <b>'+q+' need you.</b> Each one comes with what I found and what I propose; you decide.')+
+  '<div class="rows">'+[['check','pos','179 investors paid their capital call','Every amount matched to the cent, or inside the agreed tolerance for bank fees'],['check','pos','The facility was drawn and repaid','38,000,000 bridged the Halcyon investment and was repaid on 29 September'],['clock','caut','One investor is late','Carraway Family Holdings, 500,000. They prefer paper notices; the wire arrives tomorrow'],['alert','caut',q+' payments need a decision','A duplicate, a name clash, a fee paid gross, and a bank fee']].map(function(x){ return '<div class="row '+x[1]+'">'+ic(x[0],20)+'<span class="bd"><span class="t">'+x[2]+'</span><span class="m">'+x[3]+'</span></span></div>'; }).join('')+'</div>'+
+  '<div class="actions"><button class="b pri" data-go="1">Start with the '+q+'</button><span class="hint">About two minutes.</span></div>'; }
+
+function s1(){ var list=items(); var open=list.filter(function(i){return !i.row.decision;}); if(!open.length){ return persona('you','Priya Naidoo','fund accountant','Thursday, 8:41am')+'<h1 class="t">All four settled</h1><p class="sub">Eleven minutes. Last quarter the same four took most of a morning.</p><div class="rows">'+list.map(function(i){ return '<div class="row pos">'+ic('check',20)+'<span class="bd"><span class="t">'+i.title+'</span><span class="m">'+(i.row.decision.status==='rejected'?'Declined; handled manually':i.btn)+' · recorded by Priya Naidoo</span></span><span class="r">'+pill('Recorded','p')+'</span></div>'; }).join('')+'</div><div class="done">'+ic('check',16)+'<span>Nothing here moved money or sent anything. Each decision went into the books through the ledger\'s own validation, with your name on it.</span></div><div class="actions"><button class="b pri" data-go="2">Hand the close to Anna</button></div>'; }
+  var it=open[0]; var n=list.length-open.length+1;
+  return persona('you','Priya Naidoo','fund accountant','Thursday morning')+'<h1 class="t">'+it.title+'</h1><p class="counter tnum">'+n+' of '+list.length+'</p>'+
+  '<div class="card"><p class="k">What happened</p><p class="story">'+it.story+'</p><p class="found"><b>What Clearline found.</b> '+it.found+'</p><p class="prop"><b>What it proposes.</b> '+it.prop+'</p><details class="why"><summary>Show the evidence and the entry</summary><div><dl class="kv">'+Object.keys(it.why).map(function(k){return '<dt>'+k+'</dt><dd>'+esc(it.why[k])+'</dd>';}).join('')+'</dl></div></details></div>'+
+  '<div class="actions"><button class="b pri" data-settle="'+it.key+'">'+it.btn+'</button><button class="b" data-decline="'+it.key+'">Decline, I will handle it</button><span class="hint">'+pill('Nothing sends','n')+' Your decision is recorded with your name.</span></div>'; }
+
+function s2(){ var rec=received(); var late=LPS.filter(function(l){return !rec[l.id];}); var feeOpen=ROWS.some(function(r){return r.flag==='fee'&&r.status==='review';}); var cashOpen=ROWS.filter(function(r){return r.status==='review'&&r.flag!=='fee';}).length;
+  var rows=[['Cash agrees with the bank statement',cashOpen?'att':'clear',cashOpen?cashOpen+' payment'+(cashOpen>1?'s':'')+' still with Priya':'Closing balance '+fmt(closing())+', to the cent','conflict'],['Every investor accounted for',late.length?'att':'clear',late.length?late.map(function(l){return l.name;}).join(', ')+' recorded as receivable; wire arrives tomorrow':'All 180','people'],['Management fee',feeOpen?'att':'clear',feeOpen?'12,500 variance still with Priya':'Net of offsets; 12,500 owed back by the manager','document'],['Quarter-end valuations',state.valuation?'clear':'block',state.valuation?'Signed by the valuation committee':'Waiting for the valuation committee: Halcyon at cost, Bramblewood marked up','flag'],['180 investor statements','clear','Drafted; every figure traces to its source and the arithmetic ties','esign']];
+  var hard=cashOpen||feeOpen; var onlyVal=!hard&&!state.valuation;
+  return persona('you','Anna Reyes','fund controller and named signer','Thursday, 2pm')+'<h1 class="t">Ready to sign?</h1><p class="sub">180 statements go to investors by day five. Anna signs them. Here is what is true, and what still blocks.</p>'+
+  brief('Clearline','I drafted 180 capital account statements from the books. The arithmetic ties on every one. '+(onlyVal?'<b>One thing blocks release: the valuation committee has not signed.</b> The one late receivable does not block; it is recorded and disclosed.':hard?'<b>Release is blocked</b> until Priya\'s items are settled.':'<b>Nothing blocks release.</b> One signature releases all 180.'))+
+  '<div class="rows">'+rows.map(function(r){ return '<div class="row '+(r[1]==='clear'?'pos':r[1]==='att'?'caut':'crit')+'">'+ic(r[4],20)+'<span class="bd"><span class="t">'+r[0]+'</span><span class="m">'+r[2]+'</span></span><span class="r">'+dot(r[1])+'</span></div>'; }).join('')+'</div>'+
+  '<div class="actions">'+(onlyVal?'<button class="b pri" data-val="1">Record the committee\'s sign-off and sign</button><span class="hint">In the demo this one button stands in for the committee signing.</span>':hard?'<button class="b pri" disabled>Sign and release 180 statements</button><span class="hint">Blocked until Priya\'s items are settled.</span> <button class="b" data-go="1">Back to Priya</button>':'<button class="b pri" data-release="1">Sign and release 180 statements</button>')+'</div>'; }
+
+function s3(){ var lp=LPBY[state.lp]; var s=stmt(lp); var rows=[['Commitment',null,lp.commit,'sub'],['Opening balance',s.q.beg,0,'prior'],['Contributions',s.q.contrib,s.i.contrib,'contrib'],['Distributions',s.q.dist,s.i.dist,'gl'],['Investment income',s.q.inc,s.i.inc,'gl'],['Management fees',s.q.fee,s.i.fee,'fee'],['Fee offsets',s.q.off,s.i.off,'fee'],['Expenses',s.q.exp,s.i.exp,'gl'],['Realised gains',s.q.real,s.i.real,'gl'],['Unrealised gains',s.q.unreal,s.i.unreal,'val'],['Carried interest',s.q.carry,s.i.carry,'wf'],['Closing balance',s.q.end,s.i.end,'tie'],['Unfunded commitment',null,s.i.unfunded,'tie']];
+  var src=''; if(state.prov!=null){ var r=rows[state.prov]; var k=r[3]; if(k==='contrib'){ var recs=ROWS.filter(function(x){return x.lp===lp.id&&x.kind==='receipt'&&x.flag!=='dup';}); src=recs.length?recs.map(function(x){return '<b>Bank line '+x.line.n+'</b>, '+x.line.date+', '+fmt(x.line.amt)+(x.flag==='short'?', plus 35 absorbed as a bank charge':'')+'. Capital call CC-009 asked '+lp.id+' for '+fmt0(lp.call)+'.';}).join('<br>'):'<b>Receivable.</b> Called '+fmt0(lp.call)+'; the wire arrives tomorrow.'; } else if(k==='fee'){ src='<b>Fee workbook.</b> 2.0% a year on a '+fmt0(lp.commit)+' commitment, charged quarterly: '+fmt0(lp.commit*0.02/4)+'. This investor\'s share of the 12,500 director-fee offset: '+fmt0(s.q.off)+'.'; } else if(k==='val'){ src='<b>Q3 valuation pack</b>, signed by the committee. Halcyon Dental at cost; Bramblewood Software marked up on its Series C. This investor\'s share: '+fmt0(s.q.unreal)+'.'; } else if(k==='wf'){ src='<b>Waterfall.</b> 20% carry over an 8% preferred return, accrued as if the fund were sold today. This investor\'s share: '+fmt0(s.q.carry)+'.'; } else if(k==='tie'){ src='<b>Arithmetic.</b> Opening + contributions + income + gains, less fees, expenses and carry = '+fmt0(s.q.end)+'. Recomputed every time the books change; a statement that does not tie is stopped before Anna sees it.'; } else if(k==='sub'){ src='<b>Subscription agreement</b>, 24 March 2022, "Capital Commitment", page 1.'; } else src='<b>Prior statement</b>, Q2 2026, released 12 August.'; }
+  return persona('you','Anna Reyes','fund controller','Thursday, 2:06pm')+'<h1 class="t">Released</h1><p class="sub">180 statements, signed by Anna Reyes at 2:06pm. Every number on every statement can be traced. Try it: click any line.</p>'+
+  '<p class="body" style="margin-top:24px"><label for="lp" class="ink2">Statement for</label> <select id="lp" style="font:inherit;font-size:var(--text-body);height:32px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);max-width:100%">'+LPS.slice().sort(function(a,b){return a.name<b.name?-1:1;}).map(function(l){return '<option value="'+l.id+'"'+(l.id===state.lp?' selected':'')+'>'+esc(l.name)+'</option>';}).join('')+'</select></p>'+
+  '<div class="tscroll"><table class="tnum"><tr><th></th><th class="num">This quarter</th><th class="num">Since inception</th></tr>'+rows.map(function(r,i){ var bold=/Closing/.test(r[0]); return '<tr class="clk'+(state.prov===i?' sel':'')+'" data-prov="'+i+'"><td>'+(bold?'<strong>':'')+r[0]+(bold?'</strong>':'')+'</td><td class="num">'+(r[1]==null?'':fmt0(r[1]))+'</td><td class="num">'+(r[2]==null?'':fmt0(r[2]))+'</td></tr>'; }).join('')+'</table></div>'+(src?'<div class="source">'+src+'</div>':'<p class="meta ink3" style="margin-top:10px">Click a line to see where the number came from.</p>')+
+  '<div class="actions"><button class="b pri" data-go="4">See what the client sees</button></div>'; }
+
+function s4(){ var rec=received(); var unf=LPS.filter(function(l){return !rec[l.id];}); var mix={}; LPS.forEach(function(l){mix[l.type]=(mix[l.type]||0)+l.commit;}); var mixItems=Object.keys(mix).sort(function(a,b){return mix[b]-mix[a];}); var max=mix[mixItems[0]];
+  return persona('client','Daniel Kerr','CFO of the fund manager','Friday, 9:05am')+'<h1 class="t">Good morning, Daniel</h1><p class="sub">Your funds as your administrator holds them, and an answer to anything in the records.</p>'+
+  brief('Your administrator','Fund IV\'s September close is done and your Q3 statements went out yesterday. <b>'+(180-unf.length)+' of 180 investors funded the September call</b> by the due date; Carraway\'s 500,000 arrived a day late. The subscription facility is fully repaid.')+
+  '<div class="cards3">'+[['Fund II','Closed · 3.1M cash',false],['Fund III','Closed · 12.8M cash',false],['Fund IV','Q3 statements released · '+(closing()/1e6).toFixed(1)+'M cash',true]].map(function(c){return '<div class="fc'+(c[2]?' focus':'')+'"><h3>'+c[0]+'</h3><p class="tnum">'+c[1]+'</p></div>';}).join('')+'</div>'+
+  '<div class="ask"><p class="body ink2">Your managing partner asks: who has not funded the September call?</p><div class="chips"><button class="chip" data-q="Who has not funded the September call, and was anything unusual?">Who has not funded?</button><button class="chip" data-q="What is Nordvik Pensjon\'s position this quarter?">Nordvik\'s position</button><button class="chip" data-q="Which investors are public pensions?">Public pensions</button></div><form class="q" id="qf" style="margin-top:10px"><input id="q" placeholder="Ask about a fund or an investor" aria-label="Your question"><button class="b pri" type="submit">Ask</button></form>'+state.turns.map(function(t){ return '<div class="answer">'+who('client')+esc(t.q)+'<p style="margin-top:8px">'+who('agent')+esc(t.a)+'</p><p class="src">Sources: '+esc(t.src)+'</p></div>'; }).join('')+'</div>'+
+  '<div class="section"><h2>Investors by type, Fund IV</h2><div class="bars">'+mixItems.map(function(k){return '<span class="lb">'+k+'</span><span class="tr"><i style="width:'+Math.round(mix[k]/max*100)+'%"></i></span><span class="vl tnum">'+(mix[k]/FUND.lpCommit*100).toFixed(1)+'%</span>';}).join('')+'</div></div>'+
+  '<div class="done">'+ic('check',16)+'<span>This is the same data Priya settled and Anna signed, with the plumbing removed. The operations work earns the trust; the portal is what the client pays for.</span></div>'+
+  '<div class="actions"><button class="b pri" data-go="5">Why it is built this way</button><button class="b" data-go="0">Start again</button></div>'; }
+
+function answer(q){ q=q.toLowerCase(); var rec=received(); if(/nordvik/.test(q)){ var s=stmt(LPBY['LP-0023']); return {a:'Nordvik Pensjon holds 5.88% of Fund IV on a 50,000,000 commitment. The September call of 2,500,000 was received on 29 September, 35 short because of a bank fee the fund absorbed. Closing balance this quarter '+fmt0(s.q.end)+'; unfunded commitment '+fmt0(s.i.unfunded)+'.',src:'investor record LP-0023; capital call CC-009; bank line 22; Q3 statement'}; } if(/pension|type|who are/.test(q)){ var pp=LPS.filter(function(l){return l.type==='Public pension';}).sort(function(a,b){return b.commit-a.commit;}); var t=pp.reduce(function(s,l){return s+l.commit;},0); return {a:pp.length+' public pensions hold '+fmt0(t)+', '+(t/FUND.lpCommit*100).toFixed(1)+'% of investor commitments. The largest is '+pp[0].name+' at '+fmt0(pp[0].commit)+'.',src:'investor register, 180 records'}; } var unf=LPS.filter(function(l){return !rec[l.id];}); return {a:(180-unf.length)+' of 180 investors funded the September call by 29 September. '+(unf.length?unf.map(function(l){return l.name+', '+fmt0(l.call);}).join('; ')+' arrived a day late and is recorded. ':'')+'Two things were unusual and are settled: Bayfront paid twice and the duplicate is being refunded; a 2,000,000 payment from Stratton University Endowment came without a reference and was matched by amount. Nothing changes what you owe or are owed.',src:'capital call CC-009; bank feed to 1 October; reconciliation items B-1 to B-4'}; }
+
+function s5(){ var autoN=ROWS.filter(function(r){return r.status==='auto';}).length; var q=ROWS.filter(function(r){return r.status==='review';}).length; var decided=Object.keys(state.decisions).length;
+  var princ=[['One path, one decision per screen','Priya saw four cards, not a ledger. The 179 lines that settled inside policy were one sentence. Nobody hunts for the five that matter.'],['Propose and release','Every card says what happened, what the system found, what it proposes, and has one button. Money movement, KYC and statement release always need a named person.'],['Plain English first, evidence one click away','The story is in words a managing partner understands. Bank lines, ledger entries and confidence scores sit under "Show the evidence".'],['Every number has a source','Click any line on a statement and see the bank line, fee workbook or valuation pack behind it. Anna checks evidence, not arithmetic.'],['Hard rules beat soft scores','A refund needs a call-back whatever the confidence. A statement needs a named signer. These are controls, not model limits.'],['Trust is earned per fund','A new fund starts with every item going to a person. Thresholds loosen only as the fund\'s own history earns it, and each change is audited.'],['Write through the system of record','Nothing posts to the ledger directly. Every entry goes through the accounting system\'s own validation, so auditors see nothing new.'],['The client sees answers, not plumbing','Daniel\'s page has no breaks, thresholds or agent names. It has his funds, his call, and an answer that names its sources.']];
+  return '<h1 class="t">Why it is built this way</h1><p class="sub">Fund administration is a trust business under regulation. The design question is where the person sits.</p><div class="princ" style="margin-top:24px">'+princ.map(function(p){return '<div class="p"><h3>'+p[0]+'</h3><p>'+p[1]+'</p></div>';}).join('')+'</div>'+
+  '<div class="section"><h2>Governance: thresholds a controller owns</h2><div class="gate"><span class="k">Post without a person when confidence is above</span><label><input type="range" id="g-post" min="50" max="99" value="'+Math.round(state.gate.post*100)+'"> <span class="tnum body" id="gv-post">'+state.gate.post.toFixed(2)+'</span></label><span class="e" id="ge-post">'+q+' lines to a person</span><span class="k">Absorb a bank-fee shortfall up to, USD</span><label><input type="range" id="g-tol" min="0" max="100" value="'+state.gate.tol+'"> <span class="tnum body" id="gv-tol">'+fmt0(state.gate.tol)+'</span></label><span class="e" id="ge-tol">'+ROWS.filter(function(r){return r.tolAbs;}).length+' absorbed automatically</span><span class="k">Refunds and payment-instruction changes</span><span class="body">Never automatic: call-back first</span><span></span><span class="k">Statement release</span><span class="body">Never automatic: named signer</span><span></span></div><p class="meta ink3" style="margin-top:10px">Move the second slider to 50 and Nordvik\'s 35 would have settled itself. Each change is itself an audited event.</p></div>'+
+  '<div class="section"><h2>How the agents are doing on this fund</h2><div class="tscroll" style="margin-top:0"><table class="tnum"><tr><th>Agent</th><th class="num">Settled without a person</th><th class="num">Overridden by a person</th><th>Trend</th></tr><tr style="background:var(--subtle)"><td><strong>Posting, this close</strong></td><td class="num">'+(autoN/ROWS.length*100).toFixed(1)+'%</td><td class="num">'+state.overrides+' of '+decided+'</td><td>'+pill(state.overrides>2?'Review before loosening':'Inside bar',state.overrides>2?'c':'p')+'</td></tr>'+[['Intake','91%','1.2%','Stable','p'],['Posting, last 4 closes','89%','3.5%','Watch','c'],['Reconciliation','94%','6.0%','Improving','p'],['Reporting','98%','0.4%','Stable','p']].map(function(h){return '<tr><td>'+h[0]+'</td><td class="num">'+h[1]+'</td><td class="num">'+h[2]+'</td><td>'+pill(h[3],h[4])+'</td></tr>';}).join('')+'</table></div><div class="bars" style="margin-top:16px"><span class="lb">Days to close, Q4 2025</span><span class="tr"><i style="width:100%"></i></span><span class="vl">9</span><span class="lb">Q1 2026</span><span class="tr"><i style="width:78%"></i></span><span class="vl">7</span><span class="lb">Q2 2026</span><span class="tr"><i style="width:67%"></i></span><span class="vl">6</span><span class="lb">Q3 2026</span><span class="tr"><i style="width:56%"></i></span><span class="vl">5, target</span></div><p class="caption ink3" style="margin-top:8px">History figures are illustrative targets. The live row is computed from what you did in this session.</p></div>'+
+  '<div class="section"><h2>Audit log</h2><ol class="timeline">'+state.audit.map(function(a){return '<li><span class="ic">'+ic(a.who==='agent'?'agent':'people',16)+'</span><span class="at tnum">'+a.t+'</span><span class="tt">'+who(a.who)+esc(a.agent)+': '+esc(a.what)+' · '+esc(a.by)+'</span></li>';}).join('')+'</ol></div>'+
+  '<div class="section"><h2>Who else is near this</h2><p class="body ink2">Document extraction and portal chatbots are crowded. Reconciliation agents exist for hedge-fund trades and for one administrator\'s own funds. Statement review exists after the fact, sold to fund managers to check their administrator. Nobody runs one audited chain from intake through posting, reconciliation and pre-release review inside the administrator, and then gives the clean data back to the client. That seam is the product.</p></div>'+
+  '<div class="actions"><button class="b pri" data-go="0">Start again</button></div>'; }
+
+function wire(c){ c.querySelectorAll('[data-go]').forEach(function(b){ b.addEventListener('click',function(){ go(+b.dataset.go); }); });
+  c.querySelectorAll('[data-settle]').forEach(function(b){ b.addEventListener('click',function(){ var it=items().find(function(i){return String(i.key)===b.dataset.settle;}); if(it){ settle(it); toast('Recorded with your name. Nothing was sent.'); render(); window.scrollTo({top:0}); } }); });
+  c.querySelectorAll('[data-decline]').forEach(function(b){ b.addEventListener('click',function(){ var n=+b.dataset.decline; state.decisions[n]={status:'rejected',by:'Priya Naidoo'}; state.overrides++; audit('Posting','proposal declined, handled manually','Priya Naidoo','you'); toast('Declined; counted as an override for the evals.'); render(); window.scrollTo({top:0}); }); });
+  c.querySelectorAll('[data-val]').forEach(function(b){ b.addEventListener('click',function(){ state.valuation=true; audit('Reporting','valuation committee sign-off recorded','Anna Reyes','you'); state.released=true; audit('Reporting','180 statements released','Anna Reyes, named signer','you'); toast('Signed. 180 statements released.'); go(3); }); });
+  c.querySelectorAll('[data-release]').forEach(function(b){ b.addEventListener('click',function(){ state.released=true; audit('Reporting','180 statements released','Anna Reyes, named signer','you'); toast('Signed. 180 statements released.'); go(3); }); });
+  c.querySelectorAll('[data-prov]').forEach(function(tr){ tr.addEventListener('click',function(){ state.prov=+tr.dataset.prov; render(); }); });
+  var lp=c.querySelector('#lp'); if(lp) lp.addEventListener('change',function(){ state.lp=lp.value; state.prov=null; render(); });
+  var qf=c.querySelector('#qf'); if(qf){ qf.addEventListener('submit',function(e){ e.preventDefault(); var q=c.querySelector('#q').value.trim(); if(!q) return; var a=answer(q); state.turns.push({q:q,a:a.a,src:a.src}); render(); }); c.querySelectorAll('.chip[data-q]').forEach(function(ch){ ch.addEventListener('click',function(){ var a=answer(ch.dataset.q); state.turns.push({q:ch.dataset.q,a:a.a,src:a.src}); render(); }); }); }
+  [['g-post','post'],['g-tol','tol']].forEach(function(x){ var inp=c.querySelector('#'+x[0]); if(!inp) return; inp.addEventListener('input',function(){ if(x[1]==='tol') state.gate.tol=+inp.value; else state.gate.post=inp.value/100; recompute(); el('gv-post').textContent=state.gate.post.toFixed(2); el('gv-tol').textContent=fmt0(state.gate.tol); el('ge-post').textContent=ROWS.filter(function(r){return r.status==='review';}).length+' lines to a person'; el('ge-tol').textContent=ROWS.filter(function(r){return r.tolAbs;}).length+' absorbed automatically'; }); inp.addEventListener('change',function(){ audit('Fund controller','threshold changed: '+x[1]+' to '+(x[1]==='tol'?inp.value:(inp.value/100).toFixed(2)),'Anna Reyes','you'); }); }); }
+el('back').addEventListener('click',function(){ if(state.step>0) go(state.step-1); });
+document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&state.step>0) go(state.step-1); });
+go(0);
+})();
+</script>
+
+</body>
+</html>
