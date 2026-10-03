@@ -97,6 +97,37 @@ tr.clk{cursor:pointer}tr.clk:hover td{background:var(--subtle)}tr.sel td{backgro
 .rev{margin-top:40px;border-top:1px solid var(--line);padding-top:16px;font-size:var(--text-meta);color:var(--ink-3)}
 .rev details{margin-top:8px}.rev summary{cursor:pointer;color:var(--ink-2)}
 .rev ul{margin:8px 0 0;padding-left:18px;color:var(--ink-2);font-size:var(--text-body);max-width:720px}
+
+/* analysis figure: two or three bars to one scale, every value printed */
+.fig{margin-top:12px;border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;background:var(--surface)}
+.fig .cap{font-size:var(--text-caption);color:var(--ink-3);margin-bottom:8px}
+.fig .bar{display:grid;grid-template-columns:92px 1fr auto;gap:8px 12px;align-items:center;font-size:var(--text-body);margin-top:6px}
+.fig .bar .l{color:var(--ink-2)}
+.fig .bar .t{height:10px;background:var(--subtle);border-radius:var(--radius);position:relative;overflow:hidden}
+.fig .bar .t i{position:absolute;left:0;top:0;bottom:0;background:var(--ink)}
+.fig .bar .t i.extra{background:var(--caution)}
+.fig .bar .t i.gap{background:var(--critical)}
+.fig .bar .v{font-size:var(--text-meta);color:var(--ink-2);white-space:nowrap}
+.fig .verdict{margin-top:10px;padding-top:10px;border-top:1px solid var(--line);font-size:var(--text-lead);font-weight:600}
+.fig .verdict.c{color:var(--caution)}.fig .verdict.f{color:var(--critical)}.fig .verdict.p{color:var(--positive)}
+/* three beats */
+.beats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}
+.beat{border-top:2px solid var(--line);padding-top:10px;min-width:0}
+.beat.on{border-top-color:var(--ink)}
+.beat .n{font-size:var(--text-caption);color:var(--ink-3);letter-spacing:.04em;text-transform:uppercase}
+.beat .x{margin-top:4px;font-size:var(--text-body);color:var(--ink)}
+/* opener meter */
+.meter{margin-top:20px;max-width:720px}
+.meter .track{display:flex;height:14px;border-radius:var(--radius);overflow:hidden;gap:2px}
+.meter .track i{display:block;height:100%}
+.meter .leg{display:flex;gap:20px;flex-wrap:wrap;margin-top:10px;font-size:var(--text-body);color:var(--ink-2)}
+.meter .leg b{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.col>h2 .num{display:inline-flex;width:18px;height:18px;border-radius:50%;background:var(--ink);color:var(--surface);font-size:var(--text-caption);align-items:center;justify-content:center;font-weight:600}
+.cols{gap:28px;margin-top:28px}
+.say{margin-top:14px}
+h1.t{font-size:var(--text-title)}
+.after{margin-top:14px;font-size:var(--text-body);color:var(--ink-2)}
+@media(max-width:960px){.beats{grid-template-columns:1fr}}
 @media(max-width:960px){.cols{grid-template-columns:1fr}.top{padding:0 16px}main{padding:20px 16px 60px}.b{width:auto}.prog span{display:none}}
 @media (prefers-reduced-motion: reduce){.toast{transition:none}}
 </style>
@@ -123,6 +154,8 @@ var CASES=[
   recs:[{nm:'LP-0096 · Bayfront Secondary and Primary Fund VII',tag:['Called 1,250,000','n'],kv:[['Commitment','25,000,000 (2.94%)'],['This call','1,250,000, due 29 Sep'],['Received','1,250,000 on 29 Sep, line 87'],['Received again','1,250,000 on 29 Sep, line 88']],pick:true}],
   say:'Lines 87 and 88 are the <b>same payer, amount and date</b>. Line 87 already paid Bayfront\'s call in full. A payment system re-sending after a timeout is the usual cause.',
   entry:{hd:'Proposed for line 88',ln:[['Dr 1000 Cash','1,250,000.00'],['Cr 2310 Contributions received in advance, LP-0096','1,250,000.00']]},
+  beats:['Two wires from the same payer, same amount, one minute apart','Bayfront was asked for 1,250,000 once; line 87 already covers it','Hold line 88 and refund it, or decline and handle it yourself'],
+  fig:{cap:'Bayfront, this call',bars:[['Asked',1250000,1250000,''],['Received',2500000,1250000,'extra']],verdict:['Received 1,250,000 more than asked','c']},
   btn:'Hold line 88, start a refund',alt:'Decline, I will handle it',
   after:'Line 88 is held. It never counts as a contribution. A refund is drafted; it goes out only after a call-back to Bayfront on the number on file and the controller\'s release.'},
  {id:'name',title:'Two investors, one name',
@@ -130,6 +163,8 @@ var CASES=[
   recs:[{nm:'LP-0042 · Stratton University Foundation',tag:['Paid, line 178','p'],kv:[['Commitment','5,000,000'],['This call','250,000'],['Received','250,000 on 30 Sep, line 178']]},{nm:'LP-0041 · Stratton University Endowment',tag:['Not yet paid','c'],kv:[['Commitment','40,000,000'],['This call','2,000,000'],['Received','nothing']],pick:true}],
   say:'Line 179 says "Foundation" but carries <b>no investor reference</b>. The Foundation was asked for 250,000 and has paid it. The Endowment was asked for <b>exactly 2,000,000</b> and has not. The amount decides. Same mix-up on call six.',
   entry:{hd:'Proposed for line 179',ln:[['Dr 1000 Cash','2,000,000.00'],['Cr 1200 Contributions receivable, LP-0041 Endowment','2,000,000.00']]},
+  beats:['A 2,000,000 wire with no investor reference, from "Stratton"','Two Strattons: the Foundation is paid; the Endowment was asked for exactly 2,000,000','Record it for the Endowment, or decline and handle it yourself'],
+  fig:{cap:'Which Stratton was asked for 2,000,000?',bars:[['Foundation',250000,2000000,''],['Endowment',2000000,2000000,''],['Line 179',2000000,2000000,'extra']],verdict:['Line 179 fits the Endowment exactly','p']},
   btn:'Record line 179 for the Endowment',alt:'Decline, I will handle it',
   after:'Both Strattons are now paid in full. The matching rule is changed: a name alone is never enough; an investor reference or an exact amount is required.'},
  {id:'fee',title:'The fee was paid gross',
@@ -137,6 +172,8 @@ var CASES=[
   recs:[{nm:'Ledger · 5010 Management fee expense',tag:['Accrued 4,237,500','n'],kv:[['Basis','2.0% on commitments, quarterly in advance'],['Offset','12,500 director fees, added 18 Sep'],['Paid','4,250,000 on 30 Sep, line 181'],['Difference','12,500 paid too much']],pick:true}],
   say:'The invoice was approved on 15 Sep. The <b>12,500 offset was added on 18 Sep</b>, after approval, so the manager paid itself the gross figure. The ledger is right; the payment is 12,500 high.',
   entry:{hd:'Proposed',ln:[['Dr 1300 Due from manager','12,500.00'],['Cr 5010 Management fee expense','12,500.00']]},
+  beats:['The fee wire is 12,500 higher than the ledger expected','The 12,500 offset was added after the invoice was approved','Record 12,500 owed by the manager, or decline and handle it yourself'],
+  fig:{cap:'Q4 management fee',bars:[['Due',4237500,4250000,''],['Paid',4250000,4250000,'extra']],verdict:['Paid 12,500 too much','c']},
   btn:'Record 12,500 owed by the manager',alt:'Decline, I will handle it',
   after:'The manager owes 12,500, taken off next quarter\'s fee. A control is added: the offset schedule locks before the fee invoice is approved.'},
  {id:'short',title:'Nordvik is 35 short',
@@ -144,6 +181,8 @@ var CASES=[
   recs:[{nm:'LP-0023 · Nordvik Pensjon AS',tag:['Called 2,500,000','n'],kv:[['Commitment','50,000,000 (5.88%)'],['This call','2,500,000'],['Received','2,499,965 on 29 Sep, line 89'],['Short by','35'],['Last two calls','short by 35 each time']],pick:true}],
   say:'A correspondent bank between Oslo and New York took <b>35</b> as a fee. The fund agreement lets the fund absorb shortfalls under 100. This is above the fund\'s automatic tolerance of 25, so it waited for you.',
   entry:{hd:'Proposed for line 89',ln:[['Dr 1000 Cash','2,499,965.00'],['Dr 5090 Bank charges','35.00'],['Cr 1200 Contributions receivable, LP-0023','2,500,000.00']]},
+  beats:['Nordvik\'s wire is 35 under the amount asked','A bank fee in transit; the fund agreement allows absorbing under 100','Absorb the 35 and count Nordvik as paid, or decline and chase it'],
+  fig:{cap:'Nordvik, this call',bars:[['Asked',2500000,2500000,''],['Received',2499965,2500000,'gap']],verdict:['35 short, a transfer fee','c']},
   btn:'Absorb 35, count Nordvik as paid',alt:'Decline, I will handle it',
   after:'Nordvik is paid in full. A note goes to the investor to send future wires with the fee charged to them.'}
 ];
@@ -156,16 +195,18 @@ var TOTAL=CASES.length+3; // intro, 4 cases, statement, client
 function go(s){ state.step=s; state.prov=null; render(); window.scrollTo({top:0}); }
 function render(){ var c=el('content'); var s=state.step; el('back').classList.toggle('hidden',s===0); var lbl=s===0?'Overnight':s<=CASES.length?'Case '+s+' of '+CASES.length:s===CASES.length+1?'Statement':'Client'; el('prog').innerHTML='<span>'+lbl+'</span>'+Array.apply(null,{length:TOTAL}).map(function(_,i){return '<i class="'+(i<=s?'on':'')+'"></i>';}).join(''); c.innerHTML=s===0?intro():s<=CASES.length?caseView(CASES[s-1],s):s===CASES.length+1?statement():client(); wire(c); }
 
-function intro(){ return '<div class="narrow"><h1 class="t">183 wires came in overnight.</h1><p class="sub">Fund IV, September capital call. Clearline matched each wire to an investor and booked it.</p><div class="stat"><div><p class="v pos tnum">179</p><p class="l">matched and booked, no person involved</p></div><div><p class="v att tnum">4</p><p class="l">need you</p></div><div><p class="v tnum">1</p><p class="l">late; wire arrives tomorrow</p></div></div><div class="lead"><p>Each of the 4 shows you the bank lines, what Clearline found, and one button. '+who('you','Priya Naidoo, fund accountant')+'</p></div><div style="margin-top:24px;max-width:280px"><button class="b pri" data-go="1">See the first</button></div><p class="hint">About two minutes.</p></div>'; }
+function intro(){ return '<div class="narrow"><h1 class="t">183 wires came in overnight.</h1><p class="sub">Fund IV, September capital call. Clearline matched each wire to an investor and booked it.</p><div class="meter"><div class="track"><i style="width:97.3%;background:var(--positive)"></i><i style="width:2.2%;background:var(--caution)"></i><i style="width:.5%;background:var(--line-strong)"></i></div><div class="leg"><span><b style="background:var(--positive)"></b>179 matched and booked, no person involved</span><span><b style="background:var(--caution)"></b>4 need you</span><span><b style="background:var(--line-strong)"></b>1 late, arrives tomorrow</span></div></div><div class="lead"><p>Each of the 4 is one screen: the bank lines, what Clearline found, and one button. '+who('you','Priya Naidoo, fund accountant')+'</p></div><div style="margin-top:24px;max-width:280px"><button class="b pri" data-go="1">See the first</button></div><p class="hint">About two minutes.</p></div>'; }
 
 function stmtTable(st,done){ return '<div class="doc"><div class="hd"><b>'+st.title+'</b><span>'+st.sub+'</span></div><div class="tscroll"><table class="tnum"><tr><th>Line</th><th>Date</th><th>Description</th><th class="num">Amount</th></tr>'+st.rows.map(function(r){ var cls=r[4]==='hl'?(done?'ok':'hl'):r[4]; return '<tr class="'+cls+'"><td>'+r[0]+'</td><td>'+r[1]+'</td><td class="desc">'+esc(r[2])+'</td><td class="num">'+amt(r[3])+'</td></tr>'; }).join('')+'</table></div></div>'; }
 function recCard(r){ return '<div class="rec'+(r.pick?' pick':'')+'"><span class="tag '+r.tag[1]+'">'+r.tag[0]+'</span><p class="nm">'+r.nm+'</p><dl>'+r.kv.map(function(k){return '<dt>'+k[0]+'</dt><dd>'+k[1]+'</dd>';}).join('')+'</dl></div>'; }
 function entryBox(e,status){ return '<div class="entry '+status+'"><div class="hd">'+(status==='posted'?'Posted through the ledger\'s validation':e.hd)+'</div>'+e.ln.map(function(l){return '<div class="ln"><span>'+l[0]+'</span><span class="tnum">'+l[1]+'</span></div>';}).join('')+'</div>'; }
+function fig(f,done){ var max=Math.max.apply(null,f.bars.map(function(b){return Math.max(b[1],b[2]);})); return '<div class="fig"><p class="cap">'+f.cap+'</p>'+f.bars.map(function(b){ var base=Math.min(b[1],b[2]); var w=Math.round(b[1]/max*100); var wb=Math.round(base/max*100); var ex=b[3]; var inner=ex==='extra'?'<i style="width:'+wb+'%"></i><i class="extra" style="left:'+wb+'%;width:'+(w-wb)+'%"></i>':ex==='gap'?'<i style="width:'+w+'%"></i><i class="gap" style="left:'+w+'%;width:'+Math.max(1,Math.round((b[2]-b[1])/max*100))+'%"></i>':'<i style="width:'+w+'%"></i>'; return '<div class="bar"><span class="l">'+b[0]+'</span><span class="t">'+inner+'</span><span class="v tnum">'+n0(b[1])+'</span></div>'; }).join('')+'<p class="verdict '+(done?'p':f.verdict[1])+'">'+(done?'Settled':f.verdict[0])+'</p></div>'; }
+function beats(k,d){ var labels=['Spotted','Checked','Your call']; return '<div class="beats">'+k.beats.map(function(b,i){ return '<div class="beat'+((i===2&&!d)||(d&&i===2)?' on':'')+'"><p class="n">'+(i+1)+' · '+labels[i]+'</p><p class="x">'+(i===2&&d?(d==='done'?'Done: '+k.btn:'Declined; handled manually'):b)+'</p></div>'; }).join('')+'</div>'; }
 function caseView(k,i){ var d=state.done[k.id]; var next=i<CASES.length?i+1:CASES.length+1;
-  return '<h1 class="t">'+k.title+'</h1><p class="sub">'+(d?(d==='declined'?'Declined. Handled manually; counted as an override.':k.after):'What came in, what Clearline found, and what you decide.')+'</p>'+
-  '<div class="cols"><div class="col"><h2>What came in</h2>'+stmtTable(k.stmt,!!d)+'</div>'+
-  '<div class="col"><h2>'+who('agent')+' found</h2>'+k.recs.map(recCard).join('')+'<p class="say">'+k.say+'</p>'+entryBox(k.entry,d==='done'?'posted':d?'pending':'pending')+'</div>'+
-  '<div class="col"><h2>'+who('you','You decide')+'</h2>'+(d?'<div class="done"><b>'+(d==='done'?'Recorded':'Declined')+'</b>'+(d==='done'?'With your name. Nothing was sent.':'Nothing was posted.')+'</div><div class="next"><button class="b pri" data-go="'+next+'">'+(i<CASES.length?'Next case':'Go to the statements')+'</button></div>':'<button class="b pri" data-do="'+k.id+'">'+k.btn+'</button><button class="b" data-decline="'+k.id+'">'+k.alt+'</button><p class="hint">Nothing sends. Your decision is recorded with your name.</p>')+'</div></div>'; }
+  return '<h1 class="t">'+k.title+'</h1><p class="sub">Case '+i+' of '+CASES.length+' · '+who('you','Priya Naidoo, fund accountant')+'</p>'+beats(k,d)+
+  '<div class="cols"><div class="col"><h2><span class="num">1</span>What came in</h2>'+stmtTable(k.stmt,!!d)+'</div>'+
+  '<div class="col"><h2><span class="num">2</span>What Clearline found</h2>'+fig(k.fig,d==='done')+k.recs.map(recCard).join('')+'<p class="say">'+k.say+'</p>'+entryBox(k.entry,d==='done'?'posted':'pending')+'</div>'+
+  '<div class="col"><h2><span class="num">3</span>Your call</h2>'+(d?'<div class="done"><b>'+(d==='done'?'Recorded':'Declined')+'</b>'+(d==='done'?'With your name. Nothing was sent.':'Nothing was posted.')+'</div><p class="after">'+(d==='done'?k.after:'Counted as an override for the evals.')+'</p><div class="next"><button class="b pri" data-go="'+next+'">'+(i<CASES.length?'Next case':'Go to the statements')+'</button></div>':'<button class="b pri" data-do="'+k.id+'">'+k.btn+'</button><button class="b" data-decline="'+k.id+'">'+k.alt+'</button><p class="hint">Nothing sends. Your decision is recorded with your name.</p>')+'</div></div>'; }
 
 function statement(){ var src=state.prov!=null?SRC[LP[state.prov][3]]:'';
   return '<div class="narrow"><h1 class="t">Four cases, eleven minutes. Statements signed.</h1><p class="sub">'+who('you','Anna Reyes, controller')+' signed 180 investor statements at 2:06pm. Every number traces to a line. Click one.</p>'+
