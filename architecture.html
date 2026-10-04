@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Clearline architecture: five layers with every arrow pointing up, deterministic engines with the model at the edges, read-only sources and a single write path of draft journals.">
+<title>Clearline · Architecture</title>
+<link rel="stylesheet" href="about.css">
+</head>
+<body>
+<header class="top"><a class="brand" href="./">Clearline</a><nav class="nav" aria-label="About"><a href="./">Demo</a><a href="how-it-works.html">How it works</a><a class="on" href="architecture.html">Architecture</a><a href="https://github.com/nikjain15/clearline">Source</a></nav></header>
+<main><div class="wrap">
+<h1 class="t">Architecture</h1>
+<p class="sub">The approach: one dataset that every screen derives from, deterministic engines with a model only at the edges, read-only sources with a single write path, and a policy that a named person owns and versions.</p>
+
+<div class="take"><ul>
+<li>Five layers, every arrow pointing up: read-only sources, data, deterministic engines, agents, the human gate. Nothing points down except one path: a draft journal into the ledger's own validation.</li>
+<li>Everything a person might change is data: the policy (gate, tolerance, never-automatic list), the chart-of-accounts mapping, the matching rule order, the fund agreement chunks. A change is an attributed, dated entry in the policy changelog.</li>
+<li>A model scores and reads at the edges; it never decides. The prototype runs every step deterministically from a seeded dataset and says on each agent card whether it is rules, a model or policy.</li>
+</ul></div>
+
+<p class="sec">The layers</p>
+<div class="fig">
+<svg viewBox="0 0 800 440" role="img" aria-label="Five layers: read-only sources at the bottom, data, deterministic engines, agents, and the human gate at the top; one write path of draft journals from the gate back to the ledger"><g class="l-you"><rect x="20" y="20" width="700" height="64" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="32" y="42" font-size="13" fill="currentColor" font-weight="600">The human gate</text><text x="32" y="60" font-size="11" fill="currentColor" opacity=".8">Fund accountant records or declines with a reason · controller sets policy and signs statements</text><text x="32" y="75" font-size="11" fill="currentColor" opacity=".8">GP approves refunds · two signatories release a wire</text></g><g class="l-dim"><path d="M370 104 v-20" stroke="currentColor" stroke-width="1.5"/><path d="M365 90 l5 -6 5 6" stroke="currentColor" stroke-width="1.5" fill="none"/><text x="382" y="98" font-size="11" fill="currentColor">prepared entry, trace, confidence</text></g><g class="l-agent"><rect x="20" y="104" width="700" height="64" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="32" y="126" font-size="13" fill="currentColor" font-weight="600">Agents</text><text x="32" y="144" font-size="11" fill="currentColor" opacity=".8">Intake (rules) · Matching (model + rules) · Reconciliation (rules) · Posting (policy) · Ask (phrases from released data)</text><text x="32" y="159" font-size="11" fill="currentColor" opacity=".8">Each reads, cites and prepares; none decides</text></g><g class="l-dim"><path d="M370 188 v-20" stroke="currentColor" stroke-width="1.5"/><path d="M365 174 l5 -6 5 6" stroke="currentColor" stroke-width="1.5" fill="none"/><text x="382" y="182" font-size="11" fill="currentColor">differences, ties, allocations</text></g><g class="l-ink"><rect x="20" y="188" width="700" height="64" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="32" y="210" font-size="13" fill="currentColor" font-weight="600">Deterministic engines</text><text x="32" y="228" font-size="11" fill="currentColor" opacity=".8">Call arithmetic, bank tie-out, duplicate and tolerance checks, chart-of-accounts mapping</text><text x="32" y="243" font-size="11" fill="currentColor" opacity=".8">Commitment-share allocation, statement builder, the data audit; no model call</text></g><g class="l-dim"><path d="M370 272 v-20" stroke="currentColor" stroke-width="1.5"/><path d="M365 258 l5 -6 5 6" stroke="currentColor" stroke-width="1.5" fill="none"/><text x="382" y="266" font-size="11" fill="currentColor">facts with IDs</text></g><g class="l-ink"><rect x="20" y="272" width="700" height="64" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="32" y="294" font-size="13" fill="currentColor" font-weight="600">Data: one record per thing</text><text x="32" y="312" font-size="11" fill="currentColor" opacity=".8">Investors, call notice, bank lines, fund ledger, fund agreement chunks with page and clause</text><text x="32" y="327" font-size="11" fill="currentColor" opacity=".8">Policy with version; an append-only decision log: person, reason, agent versions</text></g><g class="l-dim"><path d="M370 356 v-20" stroke="currentColor" stroke-width="1.5"/><path d="M365 342 l5 -6 5 6" stroke="currentColor" stroke-width="1.5" fill="none"/><text x="382" y="350" font-size="11" fill="currentColor">statements, documents, register rows</text></g><g class="l-client"><rect x="20" y="356" width="700" height="64" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="32" y="378" font-size="13" fill="currentColor" font-weight="600">Sources, read only</text><text x="32" y="396" font-size="11" fill="currentColor" opacity=".8">Bank camt.053 / camt.054 over SWIFT · general ledger (eFront Invest) · transfer-agency register (eFront TA)</text><text x="32" y="411" font-size="11" fill="currentColor" opacity=".8">Notice inbox attachments · uploaded templates</text></g><g class="l-you"><path d="M760 84 v268" stroke="currentColor" stroke-width="1.5" stroke-dasharray="5 4" fill="none"/><path d="M755 346 l5 6 5 -6" stroke="currentColor" stroke-width="1.5" fill="none"/><text x="748" y="218" font-size="11" fill="currentColor" text-anchor="middle" transform="rotate(-90 748 218)">the one write path: a draft journal, validated by the ledger</text></g></svg>
+</div>
+<p class="cap">The only arrow pointing down is dashed: a draft journal, released by a person, into the ledger's own validation and approval. No agent holds a payment, release or send capability.</p>
+
+<p class="sec">Where the model sits, and where it never does</p>
+<p class="sub" style="margin-top:8px">The engines in the middle are deterministic: the same bank lines, call notice and policy always produce the same proposed entries, so a past decision can be replayed against the policy as it stood. A model is allowed at three edges, drawn dashed.</p>
+<div class="fig">
+<svg viewBox="0 0 760 330" role="img" aria-label="The deterministic path from sources to the human gate, with a model at three edges: scoring a match, reading free text into fields, and phrasing a trace or an answer">
+<g class="l-client"><rect x="20" y="130" width="128" height="54" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="30" y="152" font-size="12" fill="currentColor" font-weight="600">Sources, read only</text><text x="30" y="170" font-size="11" fill="currentColor" opacity=".8">statements, documents</text></g>
+<g class="l-ink"><rect x="168" y="130" width="128" height="54" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="178" y="152" font-size="12" fill="currentColor" font-weight="600">Facts</text><text x="178" y="170" font-size="11" fill="currentColor" opacity=".8">typed, with IDs</text></g>
+<g class="l-ink"><rect x="316" y="130" width="128" height="54" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="326" y="152" font-size="12" fill="currentColor" font-weight="600">Engines</text><text x="326" y="170" font-size="11" fill="currentColor" opacity=".8">arithmetic, gates</text></g>
+<g class="l-agent"><rect x="464" y="130" width="128" height="54" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="474" y="152" font-size="12" fill="currentColor" font-weight="600">Agents</text><text x="474" y="170" font-size="11" fill="currentColor" opacity=".8">prepare, cite</text></g>
+<g class="l-you"><rect x="612" y="130" width="128" height="54" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="622" y="152" font-size="12" fill="currentColor" font-weight="600">Human gate</text><text x="622" y="170" font-size="11" fill="currentColor" opacity=".8">record or decline</text></g>
+<g class="l-dim"><path d="M148 157 h18" stroke="currentColor" stroke-width="1.5"/><path d="M160 152 l6 5 -6 5" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M296 157 h18" stroke="currentColor" stroke-width="1.5"/><path d="M308 152 l6 5 -6 5" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M444 157 h18" stroke="currentColor" stroke-width="1.5"/><path d="M456 152 l6 5 -6 5" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M592 157 h18" stroke="currentColor" stroke-width="1.5"/><path d="M604 152 l6 5 -6 5" stroke="currentColor" stroke-width="1.5" fill="none"/></g>
+<g class="l-dim"><path d="M380 130 v-14 h-130 v-32 h260 v32 h-130" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="380" y="101" font-size="11" fill="currentColor" text-anchor="middle">no model call inside the engines</text><text x="380" y="114" font-size="11" fill="currentColor" text-anchor="middle">same lines and policy, same entries, replayable</text></g>
+<g class="l-agent"><rect x="30" y="230" width="220" height="70" rx="2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="5 4"/><text x="140" y="251" font-size="12" fill="currentColor" text-anchor="middle" font-weight="600">A model may read</text><text x="140" y="268" font-size="10.5" fill="currentColor" text-anchor="middle" opacity=".85">an invoice, an offset schedule, a question</text><text x="140" y="282" font-size="10.5" fill="currentColor" text-anchor="middle" opacity=".85">into fields with a confidence; low goes to a person</text><path d="M232 230 v-40" stroke="currentColor" stroke-width="1.5" stroke-dasharray="5 4"/><path d="M227 196 l5 -6 5 6" stroke="currentColor" stroke-width="1.5" fill="none"/></g>
+<g class="l-agent"><rect x="270" y="230" width="220" height="70" rx="2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="5 4"/><text x="380" y="251" font-size="12" fill="currentColor" text-anchor="middle" font-weight="600">A model may score</text><text x="380" y="268" font-size="10.5" fill="currentColor" text-anchor="middle" opacity=".85">a match, as a calibrated probability on this fund</text><text x="380" y="282" font-size="10.5" fill="currentColor" text-anchor="middle" opacity=".85">the gate that reads the score stays in code</text><path d="M528 230 v-40" stroke="currentColor" stroke-width="1.5" stroke-dasharray="5 4"/><path d="M523 196 l5 -6 5 6" stroke="currentColor" stroke-width="1.5" fill="none"/></g>
+<g class="l-agent"><rect x="510" y="230" width="220" height="70" rx="2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="5 4"/><text x="620" y="251" font-size="12" fill="currentColor" text-anchor="middle" font-weight="600">A model may phrase</text><text x="620" y="268" font-size="10.5" fill="currentColor" text-anchor="middle" opacity=".85">a trace, an investor notice, an answer with sources</text><text x="620" y="282" font-size="10.5" fill="currentColor" text-anchor="middle" opacity=".85">it never changes the entry or the verdict</text></g>
+</svg>
+</div>
+<p class="cap">The dashed edges point at Facts, at the Matching agent's score and at the phrasing step. None points at a posting, a release or a policy.</p>
+
+<p class="sec">The data path: read from the systems of record, one write path back</p>
+<div class="grid">
+<div class="card"><p class="h">Sources: feed, API, inbox</p><p>The bank delivers camt.053 end-of-day and camt.054 intraday over SWIFT. The ledger and the register are read through their APIs. The notice inbox yields attachments only. Nothing is read from production tables directly; nothing is written to a source.</p></div>
+<div class="card"><p class="h">Clearline's own store</p><p>One record per investor, line, document, chunk, policy version and decision. The decision log is append-only: person, reason, correction, agent versions, run and inputs. It stays in the administrator's tenant, encrypted at rest.</p></div>
+<div class="card"><p class="h">The write path: a draft journal</p><p>A released entry goes to the ledger as a draft journal through its API. The ledger's own validation and approval apply. A reversal is another journal with the same trace. There is no second write path.</p></div>
+</div>
+
+<p class="sec">Ingestion and indexing</p>
+<table>
+<tr><th>Source</th><th>Parse</th><th>Validate</th><th>Index</th></tr>
+<tr><td>Bank statement</td><td>Lines to amount, value date, counterparty, reference, UETR</td><td>Opening plus movements equals closing; duplicate wire IDs flagged, not dropped</td><td>By reference, exact amount, payer name</td></tr>
+<tr><td>Call notice</td><td>CSV against the template columns</td><td>Sum of calls equals the call percentage of commitments; unique investor IDs; joined to the register</td><td>By investor ID and amount</td></tr>
+<tr><td>Register</td><td>Investors, commitments, instructions, KYC</td><td>Near-duplicate names flagged; instructions verified by call-back</td><td>By ID, name tokens</td></tr>
+<tr><td>Invoice and offset schedule</td><td>Fields with a confidence</td><td>Basis cross-checked to the fund agreement; version diffed against the prior</td><td>By period and payee</td></tr>
+<tr><td>Fund agreement</td><td>Chunks at clause boundaries, about 400 tokens, 60-token overlap, page and clause on each</td><td>Operational clauses tagged; re-indexed only on a new version, old chunks kept</td><td>Keyword and embedding; cited by chunk ID</td></tr>
+</table>
+
+<p class="sec">The learning loop</p>
+<ol class="steps">
+<li><span class="n">1</span><div><b>Decide and explain</b><p>Every decision carries the trace, the difference between the proposal and what was posted, and the reason given. A decline needs a reason.</p></div></li>
+<li><span class="n">2</span><div><b>Store as labelled examples</b><p>Corrections, policy proposals and evidence gaps, in the tenant. Nothing trains a shared model.</p></div></li>
+<li><span class="n">3</span><div><b>Evaluate weekly against a held-out set</b><p>Precision above the gate, the override rate, the reversal rate on auto-booked entries. A rising override rate freezes the gate.</p></div></li>
+<li><span class="n">4</span><div><b>Propose</b><p>A rule change, a tolerance change, a retrain. Each is a line with its evidence, addressed to the controller.</p></div></li>
+<li><span class="n">5</span><div><b>Approve and version</b><p>The controller approves or rejects each line. The policy version bumps, the agents reload, the changelog is signed. The model retrains at most once a quarter and ships as a frozen version with its evaluation report.</p></div></li>
+</ol>
+
+<p class="sec">The approach, in the order it was applied</p>
+<ol class="prin">
+<li><span class="n">1</span><span><b>Start from the material, not the agent</b><span class="m">Each case is a bank statement and a call notice first; the agents appear only in what they did to that material. A viewer who has never seen fund administration can describe each screen in one sentence.</span></span></li>
+<li><span class="n">2</span><span><b>One dataset, every figure derived</b><span class="m">Investors, call notice, bank lines and ledger are generated once from a seed; every count, total, statement row and client answer is computed from them. A visible audit shows the eight ties on screen and the CSVs are downloadable.</span></span></li>
+<li><span class="n">3</span><span><b>Keep the engines deterministic; put the model at the edges</b><span class="m">Gates, tolerances, arithmetic and the posting path are code. A model scores, reads and phrases. Each agent card says which it is.</span></span></li>
+<li><span class="n">4</span><span><b>Make the policy a person's</b><span class="m">Gate, tolerance and the never-automatic list carry an owner, a date and a version. A new fund starts at a gate of 1.00. Agents propose; only the controller applies.</span></span></li>
+<li><span class="n">5</span><span><b>Never send, never pay</b><span class="m">The only write path is a draft journal into the ledger's own validation. Refunds need the GP, a call-back and two signatories; the demo drafts the script and stops.</span></span></li>
+<li><span class="n">6</span><span><b>Read the screen before trusting the test</b><span class="m">Each release is walked headlessly at 1280 and 400 pixels, every button pressed, every number dumped and checked against the dataset. Most defects were found by reading the dump, then became a check.</span></span></li>
+</ol>
+
+<p class="sec">The stack</p>
+<div class="grid">
+<div class="card"><p class="h">One HTML file, no framework</p><p>The demo is a single page served from GitHub Pages: tokens, components and data in one file, no web font, no network calls. The about pages share a stylesheet.</p></div>
+<div class="card"><p class="h">Seeded data, visible audit</p><p>A linear congruential generator builds the 180 investors and 183 lines the same way every load. The audit fold recomputes the eight reconciliations on every render.</p></div>
+<div class="card"><p class="h">Playwright walks</p><p>Two headless scripts drive every step at desktop and phone widths, upload a malformed CSV, decline without a reason, correct an entry, and dump every derived figure.</p></div>
+</div>
+<details class="more"><summary>Prototype versus production</summary><div>
+<table>
+<tr><th>In the demo</th><th>In production</th></tr>
+<tr><td>Dataset generated in the page from a seed</td><td>camt.053 feed, ledger and register APIs, inbox attachments; the same parsers against real files</td></tr>
+<tr><td>Confidences fixed per case; agent cards say rules, model or policy</td><td>Matching score from a calibrated model trained on the tenant's own history; the gate unchanged</td></tr>
+<tr><td>Draft journal shown on screen</td><td>Draft journal posted through the ledger API; the ledger validates and approves</td></tr>
+<tr><td>Feedback kept in the page's state</td><td>Append-only decision log; weekly evaluation; quarterly frozen model versions</td></tr>
+<tr><td>One fund</td><td>Policy per fund, one model per administrator; exceptions queued and routed, not four screens</td></tr>
+</table>
+</div></details>
+<details class="more"><summary>Where to read further</summary><div><ul style="margin:8px 0 0;padding-left:18px"><li><a href="https://github.com/nikjain15/clearline/blob/main/ARCHITECTURE.md">ARCHITECTURE.md</a>: the layers, the principles and where things live in the file</li><li><a href="https://github.com/nikjain15/clearline/blob/main/README.md">README.md</a>: what the demo is, who the three people are, what the mechanics follow</li><li><a href="https://github.com/nikjain15/relay">Relay</a>: the sibling product for financial advisors and the design system the tokens come from</li></ul></div></details>
+
+<div class="next"><a class="b" href="./">Open the demo</a><a href="how-it-works.html" style="align-self:center">How it works: the loop, every night</a></div>
+<p class="foot">Prototype on synthetic data. The fund, investors, people and figures are fictional.</p>
+</div></main>
+</body>
+</html>

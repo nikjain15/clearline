@@ -3,7 +3,7 @@
 A product demo of agentic fund operations for private markets: document intake, extraction, KYC assistance,
 posting, reconciliation and investor reporting, with a client portal on top. Agents propose; named people release.
 
-Live: https://nikjain15.github.io/clearline/
+Live: https://nikjain15.github.io/clearline/ · [How it works](https://nikjain15.github.io/clearline/how-it-works.html) · [Architecture](https://nikjain15.github.io/clearline/architecture.html) · [ARCHITECTURE.md](ARCHITECTURE.md)
 
 Three people work one quarter close on a fictional Luxembourg SCSp RAIF, Meridian European Buyout IV, administered by a multi-jurisdiction fund administrator: a client CFO, a fund accountant and a fund controller.
 Everything on screen is computed in the page from a synthetic dataset of 180 investors and 183 bank lines.

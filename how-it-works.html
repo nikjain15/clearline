@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="How Clearline works: four narrow agents read a fund's bank statement, book what policy allows, and hand the rest to a named person. Nothing posts or pays without one.">
+<title>Clearline · How it works</title>
+<link rel="stylesheet" href="about.css">
+</head>
+<body>
+<header class="top"><a class="brand" href="./">Clearline</a><nav class="nav" aria-label="About"><a href="./">Demo</a><a class="on" href="how-it-works.html">How it works</a><a href="architecture.html">Architecture</a><a href="https://github.com/nikjain15/clearline">Source</a></nav></header>
+<main><div class="wrap">
+<h1 class="t">How it works</h1>
+<p class="sub">Clearline sits beside the fund administrator's bank feed, ledger and investor register. Four narrow agents read what came in overnight, book what the controller's policy allows, and stop on everything else. A named person decides each stop. Nothing is posted, paid or sent without one.</p>
+
+<div class="take"><ul>
+<li>It reads the systems the administrator already runs: the bank statement, the general ledger, the transfer-agency register and the notice inbox. It writes only draft journals, through the ledger's own validation.</li>
+<li>Four agents with one job each: Intake reads, Matching proposes, Reconciliation explains, Posting applies the policy. Each shows what it read, what rule it used, and where it stopped.</li>
+<li>The controller owns the policy: a confidence gate, a tolerance, and a list of actions that are never automatic. Agents propose changes to it; only she approves them.</li>
+</ul></div>
+
+<p class="sec">The loop, every night</p>
+<ol class="steps">
+<li><span class="n">1</span><div><b>Connect and ingest</b><span class="who client"><i></i>Controller</span><p>The bank statement arrives as a camt.053 file; the call notice, fee invoice, offset schedule and fund agreement are uploaded against templates. Every line, row and clause gets an ID. The fund agreement is split at clause boundaries so an agent can cite a clause, not paraphrase it.</p></div></li>
+<li><span class="n">2</span><div><b>Intake reads</b><span class="who agent"><i></i>Rules</span><p>Each bank line is normalised: amount, value date, counterparty, remittance reference, the wire's unique ID. Lines that repeat a wire ID are flagged, not dropped. The bank's closing balance is tied to the ledger before anything else happens.</p></div></li>
+<li><span class="n">3</span><div><b>Matching proposes</b><span class="who agent"><i></i>Model and rules</span><p>Reference first, then a unique exact amount, then the payer name to break ties. The result is a proposed ledger entry with a calibrated confidence: the probability, measured on this fund's own history, that a controller would post the same entry.</p></div></li>
+<li><span class="n">4</span><div><b>Reconciliation explains</b><span class="who agent"><i></i>Rules</span><p>What was asked against what arrived, with the difference and its cause: a duplicate, a bank fee, a missing reference, an invoice approved before an offset existed. It looks for precedent on the same fund and cites the fund agreement clause that applies.</p></div></li>
+<li><span class="n">5</span><div><b>Posting applies the policy</b><span class="who agent"><i></i>Policy</span><p>Above the confidence gate and inside the tolerance, the entry goes to the ledger as a draft journal under the policy's name. Below the gate, outside the tolerance, or in an action class that is never automatic (refunds, instruction changes, amounts due from the manager, statement release), it stops and prepares everything a person needs.</p></div></li>
+<li><span class="n">6</span><div><b>A person decides</b><span class="who you"><i></i>Fund accountant</span><p>Each stop is one screen: what came in, what the agents did, and one decision with the entry that will post. The accountant records it under her own name, or declines and says why. Her reason, and any correction, goes into the weekly review.</p></div></li>
+<li><span class="n">7</span><div><b>The controller signs and the client asks</b><span class="who you"><i></i>Controller</span><p>Statements are built from the same ledger; every figure traces to a bank line, a document or a computation. The client's CFO asks the portal in plain words and gets an answer with sources, drawn only from what a person has released.</p></div></li>
+</ol>
+
+<p class="sec">What makes it trustworthy</p>
+<div class="grid">
+<div class="card"><p class="h">Policy is a person's, and versioned</p><p>The gate, the tolerance and the never-automatic list are set by the controller, dated and numbered. A new fund starts with every wire going to a person. Agents may propose a change; nothing applies until she approves it.</p></div>
+<div class="card"><p class="h">Evidence before opinion</p><p>Every trace names the bank line, the register entry, the call notice and the fund agreement chunk it read. A clause is cited by chunk ID and page, never paraphrased. The chunks each run saw are logged with the run.</p></div>
+<div class="card"><p class="h">Nothing writes to the ledger directly</p><p>Entries go in as draft journals through the ledger's own API and validation. A reversal is a journal with the same trace. The bank, the register and the inbox are read only.</p></div>
+</div>
+
+<p class="sec">Where a model sits</p>
+<div class="grid2">
+<div class="card pos"><p class="h">A model may</p><ul><li>Score a match: the calibrated probability that an entry is the one a controller would post</li><li>Read free text into fields: an invoice, an offset schedule, a question from the client</li><li>Phrase a trace, a notice to an investor, an answer with sources</li></ul></div>
+<div class="card neg"><p class="h">A model never</p><ul><li>Posts an entry, releases a payment or sends a notice</li><li>Changes the gate, the tolerance or a matching rule</li><li>Clears its own exception or marks a statement as signed</li></ul></div>
+</div>
+<details class="more"><summary>What this demonstration runs on</summary><div>Every step in the demo is the deterministic version: the dataset is generated from a seed in the page, the confidences are fixed, and each agent card says whether it is rules, a model or policy. In production the Matching score and the free-text reading are model calls; the gates, the arithmetic and the posting path stay in code so that the same facts always produce the same entry.</div></details>
+
+<p class="sec">What happens when it is wrong</p>
+<div class="grid">
+<div class="card"><p class="h">A person declines</p><p>The decline needs a reason. The accountant's own entry is compared with the proposal and the difference becomes a labelled example. Overrides are reviewed every week by the controller; a rising override rate freezes the gate.</p></div>
+<div class="card"><p class="h">Nobody notices</p><p>Three nets remain: the nightly cash tie-out between bank and ledger, a random sample of auto-booked entries that goes to a person, and the investor who sees the line on the statement and the portal.</p></div>
+<div class="card"><p class="h">The model is retrained</p><p>At most once a quarter, on this administrator's own corrections, shipped as a new frozen version with its evaluation report. Rules and thresholds change only on a named approval, recorded in the policy changelog.</p></div>
+</div>
+
+<div class="next"><a class="b" href="./">Open the demo</a><a href="architecture.html" style="align-self:center">Architecture: the layers, the data path and where the model sits</a></div>
+<p class="foot">Prototype on synthetic data. The fund, investors, people and figures are fictional; the mechanics follow Luxembourg RAIF practice: ILPA reporting template, Lux GAAP capital accounts, AIFMD depositary cash monitoring, CSSF Circular 22/806 on outsourcing.</p>
+</div></main>
+</body>
+</html>
