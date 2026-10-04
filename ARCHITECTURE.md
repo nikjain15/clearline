@@ -43,6 +43,10 @@ Everything is one file, `index.html`, in this order:
 
 The about pages (`how-it-works.html`, `architecture.html`) share `about.css`.
 
+## Agents as data
+
+`ROSTER` in `index.html` lists every agent with the same fields Relay's roster uses: role, reads, checks, leaves, never, method, basis, kind (rules, model or policy) and cadence (nightly, weekly, on request). The Agents screen (`#10`, linked from every header) renders the roster and offers `TEMPLATES`: one-parameter watches (late payer, short payment, missing reference, large receipt) whose `preview` runs against the live dataset so a person sees what a new agent would flag tonight before creating it. A made agent is a rule in the engine's own shape: it can add a flag to the same queue; it cannot loosen a gate, change a tolerance, switch a core agent off or post. Created agents appear on the Overnight screen under "What else ran tonight".
+
 ## Ingestion
 
 | Source | Parse | Validate | Index |
