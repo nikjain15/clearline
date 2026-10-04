@@ -10,7 +10,7 @@ Everything on screen is computed in the page from a synthetic dataset of 180 inv
 Thresholds, decisions, provenance and the audit log all update live. A guided tour runs on first open.
 
 Built on the [Relay design system](https://github.com/nikjain15/relay): tokens, type scale, Brief, Row, Pill,
-StateDot, Trace, the action drawer and the Ask drawer. No framework, no web font, no network calls; one HTML file.
+StateDot, Trace, the action drawer and the Ask drawer. No framework; one HTML file plus two about pages. Type and colour follow Altruist's public brand direction (black and white base, green only as a highlight, blue, gold and orange accents; condensed heavy headlines, a secondary serif voice) using the open typefaces Archivo and Newsreader from Google Fonts, the only network request.
 
 The fund, investors, people and figures are invented. Mechanics follow documented administrator practice
 (ILPA reporting template, Lux GAAP capital accounts, AIFMD Art. 21 depositary cash monitoring, CSSF Circular 22/806 on outsourcing). Ledger and register are shown as eFront Invest and eFront TA; the account bank as BNP Paribas Luxembourg; all data is synthetic.

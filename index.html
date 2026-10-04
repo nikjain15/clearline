@@ -5,11 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Clearline: agentic fund operations for a private-markets fund administrator. A Luxembourg RAIF, one capital call, four agents, people release. A product demo on synthetic data.">
 <title>Clearline Fund Ops</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@87.5..100,400..800&family=Newsreader:ital,opsz,wght@0,6..72,400..500;1,6..72,400..500&display=swap">
 </head>
 <body>
 <style>
 /* Clearline, material-first. Relay tokens verbatim. One screen per case: what came in | what the agents did | what you decide. */
-:root{--ink:#1a1a1a;--ink-2:#5c5c5c;--ink-3:#686868;--line:#e4e2dd;--line-strong:#bcb9b2;--surface:#ffffff;--subtle:#f6f5f2;--selected:#ecebe6;--critical:#b3121f;--critical-soft:#fbecec;--positive:#2d6a4f;--positive-soft:#e9f2ed;--caution:#7a5200;--caution-soft:#faf3e1;--agent:#4a3f9a;--agent-soft:#edeaf7;--advisor:#0f5a8a;--advisor-soft:#e6f0f7;--client:#0e6b5e;--client-soft:#e4f1ee;--font:"Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;--radius:2px;--radius-lg:8px;--text-caption:11px;--text-meta:12px;--text-body:13px;--text-lead:14px;--text-brief:15px;--text-heading:16px;--text-brand:17px;--text-stat:20px;--text-stat-lg:24px;--text-title:28px;--text-display:30px;color-scheme:light}
+:root{--ink:#0a0a0a;--ink-2:#4a4a4a;--ink-3:#6b6b6b;--line:#e6e6e3;--line-strong:#bfbfba;--surface:#ffffff;--subtle:#f5f5f2;--selected:#ebebe6;--critical:#c8521b;--critical-soft:#fbeee6;--positive:#549470;--positive-soft:#e8f2ec;--caution:#8a6a1e;--caution-soft:#f6efdc;--agent:#0b2a4a;--agent-soft:#e6ecf3;--advisor:#1d6fe8;--advisor-soft:#e7f0fd;--client:#6b4f2a;--client-soft:#f2ebe0;--font:"Archivo","Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;--font-2:"Newsreader",Georgia,"Times New Roman",serif;--radius:4px;--radius-lg:12px;--text-caption:11px;--text-meta:12px;--text-body:13px;--text-lead:14px;--text-brief:15px;--text-heading:16px;--text-brand:17px;--text-stat:20px;--text-stat-lg:24px;--text-title:28px;--text-display:30px;color-scheme:light}
 *{box-sizing:border-box}
 html{font-family:var(--font)}
 body{margin:0;background:var(--surface);color:var(--ink);font-size:var(--text-lead);line-height:1.5}
@@ -19,17 +20,17 @@ h1,h2,h3,p{margin:0}
 .tnum{font-variant-numeric:tabular-nums}
 .meta{font-size:var(--text-meta);color:var(--ink-3)}
 .top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;height:56px;align-items:center;gap:16px;border-bottom:1px solid var(--line);background:var(--surface);padding:0 24px}
-.brand{font-size:var(--text-brand);font-weight:600;letter-spacing:-.01em}
+.brand{font-size:var(--text-brand);font-weight:800;font-stretch:90%;letter-spacing:-.01em}
 .about{margin-left:auto;display:flex;gap:4px;font-size:var(--text-meta)}
-.about a{color:var(--ink);text-decoration:none;border:1px solid var(--line);border-radius:var(--radius);padding:4px 10px;background:var(--subtle);white-space:nowrap}.about a:hover{border-color:var(--ink)}
+.about a{color:var(--ink);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:4px 12px;background:var(--subtle);white-space:nowrap;font-weight:500}.about a:hover{border-color:var(--ink)}
 @media(max-width:600px){.top{flex-wrap:wrap;height:auto;min-height:56px;padding-top:8px;padding-bottom:8px;row-gap:6px}.about{gap:3px;flex-wrap:wrap;justify-content:flex-end}.about a,.about button{padding:4px 7px;font-size:var(--text-caption)}.about a[href*=github]{display:none}.prog span{display:none}}
 .prog{display:flex;align-items:center;gap:8px;font-size:var(--text-meta);color:var(--ink-3)}
 .prog i{display:inline-block;width:22px;height:2px;background:var(--line-strong)}.prog i.on{background:var(--ink)}
 .back{font-size:var(--text-meta);color:var(--ink-3);background:none;border:0;cursor:pointer;padding:0;text-decoration:underline;text-decoration-color:var(--line-strong)}
 main{padding:32px 24px 72px}
 .wrap{max-width:1240px;margin:0 auto}
-h1.t{font-size:var(--text-title);font-weight:300;line-height:1.15;letter-spacing:-.01em}
-.sub{margin-top:6px;color:var(--ink-2)}
+h1.t{font-size:var(--text-title);font-weight:800;font-stretch:90%;line-height:1.1;letter-spacing:-.015em}
+.sub{margin-top:8px;color:var(--ink-2);font-family:var(--font-2);font-size:var(--text-heading);line-height:1.45}
 .cols{display:grid;grid-template-columns:1.2fr 1.1fr .8fr;gap:28px;margin-top:28px;align-items:start}
 .col{min-width:0}
 .col>h2{font-size:var(--text-caption);font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px;display:flex;align-items:center;gap:8px}
@@ -70,7 +71,7 @@ tr.ok td{background:var(--positive-soft)}
 .entry .ft{padding:6px 12px;border-top:1px solid var(--line);font-size:var(--text-caption);color:var(--ink-3)}
 .entry.posted{background:var(--positive-soft);border-color:color-mix(in srgb,var(--positive) 40%,transparent)}
 .entry.dropped{opacity:.55}
-.b{display:inline-flex;min-height:40px;align-items:center;justify-content:center;border-radius:var(--radius);padding:8px 14px;line-height:1.3;font-size:var(--text-lead);border:1px solid var(--ink);background:var(--surface);color:var(--ink);cursor:pointer;width:100%;text-align:center}
+.b{display:inline-flex;min-height:44px;align-items:center;justify-content:center;border-radius:999px;font-weight:600;padding:8px 14px;line-height:1.3;font-size:var(--text-lead);border:1px solid var(--ink);background:var(--surface);color:var(--ink);cursor:pointer;width:100%;text-align:center}
 .b:hover{background:var(--subtle)}
 .b.pri{background:var(--ink);color:var(--surface)}.b.pri:hover{opacity:.85;background:var(--ink)}
 .b+.b{margin-top:8px}
@@ -91,7 +92,7 @@ tr.clk:focus-visible{outline:2px solid var(--ink);outline-offset:-2px}
 .ask{margin-top:16px}
 .ask input{height:40px;width:100%;border:1px solid var(--line-strong);background:var(--surface);padding:0 10px;font-size:var(--text-lead);color:var(--ink);border-radius:var(--radius)}
 .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-.chip{border:1px solid var(--line);background:var(--subtle);padding:4px 10px;font-size:var(--text-meta);color:var(--ink-2);border-radius:var(--radius);cursor:pointer}
+.chip{border:1px solid var(--line);background:var(--subtle);padding:4px 10px;font-size:var(--text-meta);color:var(--ink-2);border-radius:999px;cursor:pointer}
 .chip.on{border-color:var(--ink);color:var(--ink);background:var(--selected)}
 .answer{margin-top:12px;border:1px solid color-mix(in srgb,var(--agent) 30%,transparent);background:color-mix(in srgb,var(--agent-soft) 40%,var(--surface));padding:12px 14px;border-radius:var(--radius);font-size:var(--text-lead);line-height:1.6}
 .answer .s{margin-top:8px;font-size:var(--text-caption);color:var(--ink-3)}
@@ -150,7 +151,7 @@ tr.clk:focus-visible{outline:2px solid var(--ink);outline-offset:-2px}
 .agents .a{border:1px solid var(--line);border-radius:var(--radius);padding:12px;min-width:0}
 .agents .a .n{font-size:var(--text-caption);font-weight:600;color:var(--agent);text-transform:uppercase;letter-spacing:.03em}
 .agents .a .n span{font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink-3)}
-.agents .a .v{font-size:var(--text-stat);font-weight:300;line-height:1.1;margin-top:4px}
+.agents .a .v{font-size:var(--text-stat);font-weight:700;font-stretch:90%;line-height:1.1;margin-top:4px}
 .agents .a .l{font-size:var(--text-meta);color:var(--ink-3);margin-top:2px}
 .policy{margin-top:16px;max-width:960px;border-left:2px solid var(--ink);padding:8px 12px;background:var(--subtle);font-size:var(--text-body);color:var(--ink-2)}
 .policy b{color:var(--ink);font-weight:600}
@@ -198,7 +199,7 @@ tr.clk:focus-visible{outline:2px solid var(--ink);outline-offset:-2px}
 .steps{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:16px}
 .step{border-top:2px solid var(--ink);padding-top:8px;min-width:0}
 .step .n{font-size:var(--text-caption);color:var(--ink-3);letter-spacing:.04em;text-transform:uppercase}
-.step .v{font-size:var(--text-stat);font-weight:300;line-height:1.1;margin-top:4px}
+.step .v{font-size:var(--text-stat);font-weight:700;font-stretch:90%;line-height:1.1;margin-top:4px}
 .step .x{margin-top:4px;font-size:var(--text-meta);color:var(--ink-2)}
 .fb{margin-top:16px;border-top:1px solid var(--line);padding-top:12px}
 .fb .meta{margin-bottom:6px}
@@ -213,7 +214,7 @@ tr.clk:focus-visible{outline:2px solid var(--ink);outline-offset:-2px}
 .learn table td,.learn table th{vertical-align:top}
 .learn td.w{color:var(--ink-2);font-size:var(--text-meta)}
 .kpi{display:flex;gap:28px;flex-wrap:wrap;margin-top:14px}
-.kpi .v{font-size:var(--text-stat-lg);font-weight:300;line-height:1.1}.kpi .l{font-size:var(--text-meta);color:var(--ink-3);margin-top:2px}
+.kpi .v{font-size:var(--text-stat-lg);font-weight:700;font-stretch:90%;line-height:1.1}.kpi .l{font-size:var(--text-meta);color:var(--ink-3);margin-top:2px}
 .fold{margin-top:14px;border:1px solid var(--line);border-radius:var(--radius)}
 .fold>summary{cursor:pointer;padding:8px 12px;font-size:var(--text-body);color:var(--ink-2);list-style:none;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
 .fold>summary::-webkit-details-marker{display:none}
@@ -229,7 +230,7 @@ tr.clk:focus-visible{outline:2px solid var(--ink);outline-offset:-2px}
 tr.exc td{background:var(--caution-soft)}
 tr.exc td:first-child{box-shadow:inset 3px 0 0 var(--caution)}
 tr.dim td{color:var(--ink-3)}
-@media(max-width:960px){.grid2,.steps{grid-template-columns:1fr}.uprow{grid-template-columns:1fr;gap:4px}.agents{grid-template-columns:repeat(2,1fr)}.beats{grid-template-columns:1fr}.cols{grid-template-columns:1fr}.top{padding:0 16px}main{padding:20px 16px 60px}.prog i{display:none}.toast{top:calc(64px + env(safe-area-inset-top,0px));bottom:auto}}
+@media(max-width:960px){.grid2,.steps{grid-template-columns:1fr}.steps{display:flex;flex-direction:column}.uprow{grid-template-columns:1fr;gap:4px}.agents{grid-template-columns:repeat(2,1fr)}.beats{grid-template-columns:1fr}.cols{grid-template-columns:1fr}.top{padding:0 16px}main{padding:20px 16px 60px}.prog i{display:none}.toast{top:calc(64px + env(safe-area-inset-top,0px));bottom:auto}}
 /* agents roster */
 .roster{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px}
 .ag{border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;min-width:0;font-size:var(--text-body)}
@@ -268,7 +269,7 @@ tr.dim td{color:var(--ink-3)}
 .scale{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px}
 .scale .a{border:1px solid var(--line);border-radius:var(--radius);padding:10px 12px;min-width:0}
 .scale .a .n{font-size:var(--text-caption);color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em}
-.scale .a .v{font-size:var(--text-stat);font-weight:300;line-height:1.1;margin-top:4px}
+.scale .a .v{font-size:var(--text-stat);font-weight:700;font-stretch:90%;line-height:1.1;margin-top:4px}
 .scale .a .l{font-size:var(--text-meta);color:var(--ink-2);margin-top:2px}
 .stages{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:12px}
 .stages .s{border-top:2px solid var(--ink);padding-top:6px;min-width:0}
@@ -281,7 +282,7 @@ tr.dim td{color:var(--ink-3)}
 @media (prefers-reduced-motion: reduce){.toast{transition:none}}
 </style>
 
-<header class="top"><span class="brand">Clearline</span><button class="back hidden" id="back">Back</button><nav class="about" aria-label="About"><button class="back" id="agentsLink" style="border:1px solid var(--line);border-radius:var(--radius);padding:4px 10px;background:var(--subtle);text-decoration:none;color:var(--ink)">Agents</button><a href="how-it-works.html">How it works</a><a href="architecture.html">Architecture</a><a href="https://github.com/nikjain15/clearline">Source</a></nav><span class="prog" id="prog"></span></header>
+<header class="top"><span class="brand">Clearline</span><button class="back hidden" id="back">Back</button><nav class="about" aria-label="About"><button class="back" id="agentsLink" style="border:1px solid var(--line);border-radius:999px;padding:4px 12px;background:var(--subtle);text-decoration:none;color:var(--ink);font-weight:500">Agents</button><a href="how-it-works.html">How it works</a><a href="architecture.html">Architecture</a><a href="https://github.com/nikjain15/clearline">Source</a></nav><span class="prog" id="prog"></span></header>
 <main><div class="wrap" id="content"></div></main>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
