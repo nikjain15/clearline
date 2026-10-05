@@ -47,6 +47,8 @@ The about pages (`how-it-works.html`, `architecture.html`) share `about.css`.
 
 `ROSTER` in `index.html` lists every agent with the same fields Relay's roster uses: role, reads, checks, leaves, never, method, basis, kind (rules, model or policy) and cadence (nightly, weekly, on request). The Agents screen (`#10`, linked from every header) renders the roster and offers `TEMPLATES`: one-parameter watches (late payer, short payment, missing reference, large receipt) whose `preview` runs against the live dataset so a person sees what a new agent would flag tonight before creating it. A made agent is a rule in the engine's own shape: it can add a flag to the same queue; it cannot loosen a gate, change a tolerance, switch a core agent off or post. Created agents appear on the Overnight screen under "What else ran tonight".
 
+Every agent is editable from its card, under one rule borrowed from Relay: tighten now, loosen asks. Wording applies at once. Raising the gate, lowering the tolerance, narrowing a window, running more often or adding a watch apply from the next run and are logged. Lowering the gate, raising the tolerance, allowing a name alone to match, running less often or switching an agent off need a reason and go to the controller; nothing changes until she approves, and a refusal stays in the log. Firm controls (balance tie-out, duplicate wire IDs, the never-automatic list, answer only from released data) are locked. The editor previews what tomorrow's run would do differently from the dataset's per-line confidences.
+
 ## Ingestion
 
 | Source | Parse | Validate | Index |
